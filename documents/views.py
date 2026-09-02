@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from projects.models import Project
 from .forms import TenderDocumentForm
+from .utils import extract_text_from_pdf
 
 
 def tender_document_upload(request, project_id):
@@ -26,10 +27,16 @@ def tender_document_upload(request, project_id):
             )
 
             tender_document.project = project
-            tender_document.save()
+        tender_document.save()
 
-            return redirect("project_list")
+        extracted_text = extract_text_from_pdf(
+            tender_document.file.path
+        )
 
+        tender_document.extracted_text = extracted_text
+        tender_document.save()
+
+        return redirect("project_list")
     else:
         form = TenderDocumentForm()
 

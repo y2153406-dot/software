@@ -17,6 +17,10 @@ class TenderDocument(models.Model):
         upload_to="tender_documents/",
     )
 
+    extracted_text = models.TextField(
+        blank=True,
+    )
+
     uploaded_at = models.DateTimeField(
         auto_now_add=True,
     )
