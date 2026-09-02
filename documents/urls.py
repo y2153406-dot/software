@@ -8,4 +8,20 @@ urlpatterns = [
         views.tender_document_upload,
         name="tender_document_upload",
     ),
+    path(
+    "document/<int:document_id>/extract-requirements/",
+    views.extract_tender_requirements,
+    name="extract_tender_requirements",
+),
+
+path(
+    "project/<int:project_id>/solution/",
+    views.project_solution,
+    name="project_solution",
+),
+path(
+    "project/<int:project_id>/analyze-compliance/",
+    views.analyze_project_compliance,
+    name="analyze_project_compliance",
+),
 ]

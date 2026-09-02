@@ -1,5 +1,6 @@
 from django import forms
-from .models import TenderDocument
+
+from .models import ProjectSolution, TenderDocument
 
 
 class TenderDocumentForm(forms.ModelForm):
@@ -19,8 +20,7 @@ class TenderDocumentForm(forms.ModelForm):
                     "placeholder": "Enter document title",
                 }
             ),
-
-            "file": forms.ClearableFileInput(
+            "file": forms.FileInput(
                 attrs={
                     "class": "form-control",
                     "accept": ".pdf",
@@ -28,14 +28,31 @@ class TenderDocumentForm(forms.ModelForm):
             ),
         }
 
-    def clean_file(self):
-        uploaded_file = self.cleaned_data.get("file")
 
-        if uploaded_file:
+class ProjectSolutionForm(forms.ModelForm):
 
-            if not uploaded_file.name.lower().endswith(".pdf"):
-                raise forms.ValidationError(
-                    "Only PDF files are allowed."
-                )
+    class Meta:
+        model = ProjectSolution
 
-        return uploaded_file
+        fields = [
+            "title",
+            "description",
+        ]
+
+        widgets = {
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter solution title",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": (
+                        "Describe your proposed solution in detail"
+                    ),
+                    "rows": 8,
+                }
+            ),
+        }

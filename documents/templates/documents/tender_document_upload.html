@@ -42,77 +42,232 @@ Upload Tender | Tender Compliance AI
                 </div>
 
 
-                <form
-                    method="POST"
-                    enctype="multipart/form-data"
-                >
+                {% if tender_document %}
 
-                    {% csrf_token %}
+                    <div class="alert alert-success">
 
+                        <strong>
+                            ✓ Tender Document Uploaded Successfully
+                        </strong>
 
-                    <div class="mb-3">
+                        <hr>
 
-                        <label class="form-label fw-semibold">
+                        <p class="mb-1">
 
-                            Document Title
+                            <strong>Title:</strong>
+                            {{ tender_document.title }}
 
-                        </label>
+                        </p>
 
-                        {{ form.title }}
+                        <p class="mb-0">
 
-                        {% if form.title.errors %}
+                            <strong>Extracted Text:</strong>
+                            {{ tender_document.extracted_text|length }}
+                            characters
 
-                            <div class="text-danger small mt-1">
-
-                                {{ form.title.errors }}
-
-                            </div>
-
-                        {% endif %}
+                        </p>
 
                     </div>
 
 
-                    <div class="mb-4">
+                    <div class="mt-4">
 
-                        <label class="form-label fw-semibold">
+                        <h5 class="fw-bold">
+                            🧠 AI Analysis
+                        </h5>
 
-                            Upload PDF
+                        <p class="text-muted">
 
-                        </label>
+                            Use AI to analyze the tender document and extract
+                            important technical, financial, eligibility, and
+                            compliance requirements.
 
-                        {{ form.file }}
+                        </p>
 
-                        <div class="form-text">
 
-                            Only PDF files are allowed.
+                        <form
+                            method="POST"
+                            action="{% url 'extract_tender_requirements' tender_document.id %}"
+                        >
+
+                            {% csrf_token %}
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+
+                                🧠 Extract Requirements with AI
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    {% if tender_document.requirements.exists %}
+
+                        <hr class="my-4">
+
+
+                        <div>
+
+                            <h5 class="fw-bold mb-3">
+
+                                📋 Extracted Requirements
+
+                            </h5>
+
+                            <p class="text-muted">
+
+                                Requirements identified from the tender
+                                document using AI.
+
+                            </p>
+
+
+                            <div class="list-group">
+
+                                {% for requirement in tender_document.requirements.all %}
+
+                                    <div class="list-group-item">
+
+                                        <div
+                                            class="d-flex justify-content-between align-items-start gap-3"
+                                        >
+
+                                            <div>
+
+                                                <p class="mb-2">
+
+                                                    {{ requirement.requirement_text }}
+
+                                                </p>
+
+
+                                                <span
+                                                    class="badge text-bg-secondary"
+                                                >
+
+                                                    {{ requirement.category|title }}
+
+                                                </span>
+
+                                            </div>
+
+
+                                            {% if requirement.is_mandatory %}
+
+                                                <span
+                                                    class="badge text-bg-danger flex-shrink-0"
+                                                >
+
+                                                    Mandatory
+
+                                                </span>
+
+                                            {% else %}
+
+                                                <span
+                                                    class="badge text-bg-success flex-shrink-0"
+                                                >
+
+                                                    Optional
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                {% else %}
+
+                    <form
+                        method="POST"
+                        enctype="multipart/form-data"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+
+                                Document Title
+
+                            </label>
+
+                            {{ form.title }}
+
+                            {% if form.title.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.title.errors }}
+
+                                </div>
+
+                            {% endif %}
 
                         </div>
 
 
-                        {% if form.file.errors %}
+                        <div class="mb-4">
 
-                            <div class="text-danger small mt-1">
+                            <label class="form-label fw-semibold">
 
-                                {{ form.file.errors }}
+                                Upload PDF
+
+                            </label>
+
+                            {{ form.file }}
+
+                            <div class="form-text">
+
+                                Only PDF files are allowed.
 
                             </div>
 
-                        {% endif %}
 
-                    </div>
+                            {% if form.file.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.file.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
 
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                    >
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
 
-                        Upload Tender
+                            Upload Tender
 
-                    </button>
+                        </button>
 
-                </form>
+                    </form>
+
+                {% endif %}
 
             </div>
 

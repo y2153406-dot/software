@@ -1,0 +1,723 @@
+{% extends "projects/base.html" %}
+
+{% block title %}
+Project Solution | Tender Compliance AI
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-10">
+
+
+        <!-- BACK BUTTON -->
+
+        <div class="mb-4">
+
+            <a
+                href="{% url 'project_list' %}"
+                class="text-decoration-none"
+            >
+                ← Back to Projects
+            </a>
+
+        </div>
+
+
+        <!-- PROJECT SOLUTION CARD -->
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-body p-4 p-md-5">
+
+
+                <!-- PROJECT HEADER -->
+
+                <div class="mb-4">
+
+                    <h2 class="fw-bold">
+
+                        Project Solution
+
+                    </h2>
+
+
+                    <p class="text-muted mb-0">
+
+                        Project:
+
+                        <strong>
+
+                            {{ project.name }}
+
+                        </strong>
+
+                    </p>
+
+                </div>
+
+
+                <!-- ERROR MESSAGE -->
+
+                {% if error_message %}
+
+                    <div class="alert alert-danger">
+
+                        {{ error_message }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- SAVED SOLUTION MESSAGE -->
+
+                {% if solution %}
+
+                    <div class="alert alert-info">
+
+                        <strong>
+
+                            ✓ Solution Already Saved
+
+                        </strong>
+
+
+                        <div class="small mt-1">
+
+                            You can update your solution details below.
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- PROJECT SOLUTION FORM -->
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <!-- SOLUTION TITLE -->
+
+                    <div class="mb-3">
+
+                        <label
+                            class="form-label fw-semibold"
+                        >
+
+                            Solution Title
+
+                        </label>
+
+
+                        {{ form.title }}
+
+
+                        {% if form.title.errors %}
+
+                            <div
+                                class="text-danger small mt-1"
+                            >
+
+                                {{ form.title.errors }}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- SOLUTION DESCRIPTION -->
+
+                    <div class="mb-4">
+
+                        <label
+                            class="form-label fw-semibold"
+                        >
+
+                            Solution Description
+
+                        </label>
+
+
+                        {{ form.description }}
+
+
+                        <div class="form-text">
+
+                            Describe your proposed solution,
+                            features, technologies, architecture,
+                            and implementation approach in detail.
+
+                        </div>
+
+
+                        {% if form.description.errors %}
+
+                            <div
+                                class="text-danger small mt-1"
+                            >
+
+                                {{ form.description.errors }}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- SAVE BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+
+                        {% if solution %}
+
+                            Update Solution
+
+                        {% else %}
+
+                            Save Solution
+
+                        {% endif %}
+
+                    </button>
+
+                </form>
+
+
+                <!-- AI COMPLIANCE ANALYSIS -->
+
+                {% if solution %}
+
+                    <hr class="my-4">
+
+
+                    <div class="mt-4">
+
+                        <h5 class="fw-bold">
+
+                            🧠 AI Compliance Analysis
+
+                        </h5>
+
+
+                        <p class="text-muted">
+
+                            Compare your project solution with
+                            the extracted tender requirements
+                            using AI and fallback analysis.
+
+                        </p>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'analyze_project_compliance' project.id %}"
+                        >
+
+                            {% csrf_token %}
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                            >
+
+                                🧠 Analyze Compliance with AI
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+
+        <!-- COMPLIANCE DASHBOARD -->
+
+        {% if compliance_results %}
+
+
+            <div class="mb-4">
+
+                <h3 class="fw-bold">
+
+                    📊 Compliance Dashboard
+
+                </h3>
+
+
+                <p class="text-muted">
+
+                    Overview of your project solution
+                    against the tender requirements.
+
+                </p>
+
+            </div>
+
+
+            <!-- SUMMARY CARDS -->
+
+            <div class="row g-3 mb-4">
+
+
+                <!-- OVERALL SCORE -->
+
+                <div class="col-md-3">
+
+                    <div
+                        class="card border-0 shadow-sm h-100"
+                    >
+
+                        <div class="card-body">
+
+                            <div
+                                class="text-muted small"
+                            >
+
+                                Overall Compliance Score
+
+                            </div>
+
+
+                            <h2 class="fw-bold mt-2">
+
+                                {{ overall_score }}%
+
+                            </h2>
+
+
+                            <!-- SCORE PROGRESS BAR -->
+
+                            <div
+                                class="progress"
+                                style="height: 8px;"
+                            >
+
+                                <div
+                                    class="progress-bar"
+                                    role="progressbar"
+                                    style="width: {{ overall_score }}%;"
+                                    aria-valuenow="{{ overall_score }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- COMPLIANT -->
+
+                <div class="col-md-3">
+
+                    <div
+                        class="card border-success shadow-sm h-100"
+                    >
+
+                        <div class="card-body">
+
+                            <div
+                                class="text-success small fw-semibold"
+                            >
+
+                                ✓ Compliant
+
+                            </div>
+
+
+                            <h2
+                                class="fw-bold text-success mt-2"
+                            >
+
+                                {{ compliant_count }}
+
+                            </h2>
+
+
+                            <small class="text-muted">
+
+                                Requirements satisfied
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PARTIAL -->
+
+                <div class="col-md-3">
+
+                    <div
+                        class="card border-warning shadow-sm h-100"
+                    >
+
+                        <div class="card-body">
+
+                            <div
+                                class="text-warning small fw-semibold"
+                            >
+
+                                ⚠ Partial
+
+                            </div>
+
+
+                            <h2
+                                class="fw-bold text-warning mt-2"
+                            >
+
+                                {{ partial_count }}
+
+                            </h2>
+
+
+                            <small class="text-muted">
+
+                                Partially satisfied
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NON-COMPLIANT -->
+
+                <div class="col-md-3">
+
+                    <div
+                        class="card border-danger shadow-sm h-100"
+                    >
+
+                        <div class="card-body">
+
+                            <div
+                                class="text-danger small fw-semibold"
+                            >
+
+                                ✕ Non-Compliant
+
+                            </div>
+
+
+                            <h2
+                                class="fw-bold text-danger mt-2"
+                            >
+
+                                {{ non_compliant_count }}
+
+                            </h2>
+
+
+                            <small class="text-muted">
+
+                                Requirements missing
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- REQUIREMENT ANALYSIS -->
+
+            <div
+                class="card border-0 shadow-sm mb-5"
+            >
+
+                <div class="card-body p-4">
+
+
+                    <!-- RESULTS HEADER -->
+
+                    <div
+                        class="d-flex justify-content-between align-items-center mb-4"
+                    >
+
+                        <div>
+
+                            <h4 class="fw-bold mb-1">
+
+                                📋 Requirement Analysis
+
+                            </h4>
+
+
+                            <p class="text-muted mb-0">
+
+                                {{ total_requirements }}
+                                requirements analyzed
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- RESULTS LOOP -->
+
+                    {% for result in compliance_results %}
+
+
+                        <div
+                            class="card border mb-3"
+                        >
+
+                            <div class="card-body p-4">
+
+
+                                <!-- RESULT HEADER -->
+
+                                <div
+                                    class="d-flex justify-content-between align-items-start mb-3"
+                                >
+
+                                    <h6
+                                        class="fw-bold mb-0"
+                                    >
+
+                                        Requirement
+                                        {{ forloop.counter }}
+
+                                    </h6>
+
+
+                                    <!-- STATUS BADGE -->
+
+                                    {% if result.status == "compliant" %}
+
+                                        <span
+                                            class="badge bg-success"
+                                        >
+
+                                            ✓ Compliant
+
+                                        </span>
+
+
+                                    {% elif result.status == "partial" %}
+
+                                        <span
+                                            class="badge bg-warning text-dark"
+                                        >
+
+                                            ⚠ Partial
+
+                                        </span>
+
+
+                                    {% else %}
+
+                                        <span
+                                            class="badge bg-danger"
+                                        >
+
+                                            ✕ Non-Compliant
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- TENDER REQUIREMENT -->
+
+                                <div class="mb-4">
+
+                                    <strong>
+
+                                        Tender Requirement:
+
+                                    </strong>
+
+
+                                    <p
+                                        class="text-muted mt-2 mb-0"
+                                    >
+
+                                        {{ result.requirement.requirement_text }}
+
+                                    </p>
+
+                                </div>
+
+
+                                <!-- CONFIDENCE SCORE -->
+
+                                <div class="mb-4">
+
+                                    <div
+                                        class="d-flex justify-content-between"
+                                    >
+
+                                        <strong>
+
+                                            Confidence Score
+
+                                        </strong>
+
+
+                                        <span
+                                            class="fw-semibold"
+                                        >
+
+                                            {{ result.confidence_score }}%
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- CONFIDENCE PROGRESS -->
+
+                                    <div
+                                        class="progress mt-2"
+                                        style="height: 8px;"
+                                    >
+
+                                        {% if result.status == "compliant" %}
+
+                                            <div
+                                                class="progress-bar bg-success"
+                                                role="progressbar"
+                                                style="width: {{ result.confidence_score }}%;"
+                                                aria-valuenow="{{ result.confidence_score }}"
+                                                aria-valuemin="0"
+                                                aria-valuemax="100"
+                                            >
+
+                                            </div>
+
+
+                                        {% elif result.status == "partial" %}
+
+                                            <div
+                                                class="progress-bar bg-warning"
+                                                role="progressbar"
+                                                style="width: {{ result.confidence_score }}%;"
+                                                aria-valuenow="{{ result.confidence_score }}"
+                                                aria-valuemin="0"
+                                                aria-valuemax="100"
+                                            >
+
+                                            </div>
+
+
+                                        {% else %}
+
+                                            <div
+                                                class="progress-bar bg-danger"
+                                                role="progressbar"
+                                                style="width: {{ result.confidence_score }}%;"
+                                                aria-valuenow="{{ result.confidence_score }}"
+                                                aria-valuemin="0"
+                                                aria-valuemax="100"
+                                            >
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ANALYSIS -->
+
+                                <div
+                                    class="bg-light rounded p-3"
+                                >
+
+                                    <strong>
+
+                                        🧠 Analysis
+
+                                    </strong>
+
+
+                                    <p
+                                        class="mt-2 mb-0"
+                                    >
+
+                                        {{ result.explanation }}
+
+                                    </p>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                    {% empty %}
+
+
+                        <div
+                            class="alert alert-secondary"
+                        >
+
+                            No compliance results are available.
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+{% endblock %}
