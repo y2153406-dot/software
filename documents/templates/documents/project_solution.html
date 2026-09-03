@@ -107,9 +107,7 @@ Project Solution | Tender Compliance AI
 
                     <div class="mb-3">
 
-                        <label
-                            class="form-label fw-semibold"
-                        >
+                        <label class="form-label fw-semibold">
 
                             Solution Title
 
@@ -121,9 +119,7 @@ Project Solution | Tender Compliance AI
 
                         {% if form.title.errors %}
 
-                            <div
-                                class="text-danger small mt-1"
-                            >
+                            <div class="text-danger small mt-1">
 
                                 {{ form.title.errors }}
 
@@ -138,9 +134,7 @@ Project Solution | Tender Compliance AI
 
                     <div class="mb-4">
 
-                        <label
-                            class="form-label fw-semibold"
-                        >
+                        <label class="form-label fw-semibold">
 
                             Solution Description
 
@@ -161,9 +155,7 @@ Project Solution | Tender Compliance AI
 
                         {% if form.description.errors %}
 
-                            <div
-                                class="text-danger small mt-1"
-                            >
+                            <div class="text-danger small mt-1">
 
                                 {{ form.description.errors }}
 
@@ -216,7 +208,7 @@ Project Solution | Tender Compliance AI
 
                             Compare your project solution with
                             the extracted tender requirements
-                            using AI and fallback analysis.
+                            using AI.
 
                         </p>
 
@@ -242,6 +234,54 @@ Project Solution | Tender Compliance AI
 
                     </div>
 
+
+                    <!-- RISK ANALYSIS -->
+
+                    <hr class="my-4">
+
+
+                    <div class="mt-4">
+
+                        <h5 class="fw-bold">
+
+                            🛡️ Project Risk Analysis
+
+                        </h5>
+
+
+                        <p class="text-muted">
+
+                            Identify potential risks in your
+                            project based on tender requirements
+                            and your proposed solution.
+
+                        </p>
+
+
+                        <!-- RISK ANALYSIS FORM -->
+
+                        <form
+                            method="POST"
+                            action="{% url 'analyze_project_risks' project.id %}"
+                        >
+
+                            {% csrf_token %}
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-warning"
+                            >
+
+                                🛡️ Analyze Project Risks
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
                 {% endif %}
 
 
@@ -257,19 +297,58 @@ Project Solution | Tender Compliance AI
 
             <div class="mb-4">
 
-                <h3 class="fw-bold">
+                <div
+                    class="d-flex justify-content-between align-items-center"
+                >
 
-                    📊 Compliance Dashboard
+                    <div>
 
-                </h3>
+                        <h3 class="fw-bold mb-1">
+
+                            📊 Compliance Dashboard
+
+                        </h3>
 
 
-                <p class="text-muted">
+                        <p class="text-muted mb-0">
 
-                    Overview of your project solution
-                    against the tender requirements.
+                            Overview of your project solution
+                            against tender requirements.
 
-                </p>
+                        </p>
+
+                    </div>
+
+
+                    <div class="text-end">
+
+                        <small
+                            class="text-muted d-block mb-2"
+                        >
+
+                            Total Requirements:
+
+                            <strong>
+
+                                {{ total_requirements }}
+
+                            </strong>
+
+                        </small>
+
+
+                        <a
+                            href="{% url 'compliance_report' project.id %}"
+                            class="btn btn-outline-primary"
+                        >
+
+                            📄 View Full Report
+
+                        </a>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -284,28 +363,26 @@ Project Solution | Tender Compliance AI
                 <div class="col-md-3">
 
                     <div
-                        class="card border-0 shadow-sm h-100"
+                        class="card border-primary shadow-sm h-100"
                     >
 
                         <div class="card-body">
 
-                            <div
-                                class="text-muted small"
-                            >
+                            <div class="text-muted small">
 
-                                Overall Compliance Score
+                                Overall Score
 
                             </div>
 
 
-                            <h2 class="fw-bold mt-2">
+                            <h2
+                                class="fw-bold text-primary mt-2"
+                            >
 
                                 {{ overall_score }}%
 
                             </h2>
 
-
-                            <!-- SCORE PROGRESS BAR -->
 
                             <div
                                 class="progress"
@@ -460,9 +537,7 @@ Project Solution | Tender Compliance AI
 
             <!-- REQUIREMENT ANALYSIS -->
 
-            <div
-                class="card border-0 shadow-sm mb-5"
-            >
+            <div class="card border-0 shadow-sm mb-5">
 
                 <div class="card-body p-4">
 
@@ -499,9 +574,7 @@ Project Solution | Tender Compliance AI
                     {% for result in compliance_results %}
 
 
-                        <div
-                            class="card border mb-3"
-                        >
+                        <div class="card border mb-3">
 
                             <div class="card-body p-4">
 
@@ -512,17 +585,13 @@ Project Solution | Tender Compliance AI
                                     class="d-flex justify-content-between align-items-start mb-3"
                                 >
 
-                                    <h6
-                                        class="fw-bold mb-0"
-                                    >
+                                    <h6 class="fw-bold mb-0">
 
                                         Requirement
                                         {{ forloop.counter }}
 
                                     </h6>
 
-
-                                    <!-- STATUS BADGE -->
 
                                     {% if result.status == "compliant" %}
 
@@ -561,7 +630,7 @@ Project Solution | Tender Compliance AI
                                 </div>
 
 
-                                <!-- TENDER REQUIREMENT -->
+                                <!-- REQUIREMENT -->
 
                                 <div class="mb-4">
 
@@ -598,9 +667,7 @@ Project Solution | Tender Compliance AI
                                         </strong>
 
 
-                                        <span
-                                            class="fw-semibold"
-                                        >
+                                        <span class="fw-semibold">
 
                                             {{ result.confidence_score }}%
 
@@ -608,8 +675,6 @@ Project Solution | Tender Compliance AI
 
                                     </div>
 
-
-                                    <!-- CONFIDENCE PROGRESS -->
 
                                     <div
                                         class="progress mt-2"
@@ -622,9 +687,6 @@ Project Solution | Tender Compliance AI
                                                 class="progress-bar bg-success"
                                                 role="progressbar"
                                                 style="width: {{ result.confidence_score }}%;"
-                                                aria-valuenow="{{ result.confidence_score }}"
-                                                aria-valuemin="0"
-                                                aria-valuemax="100"
                                             >
 
                                             </div>
@@ -636,9 +698,6 @@ Project Solution | Tender Compliance AI
                                                 class="progress-bar bg-warning"
                                                 role="progressbar"
                                                 style="width: {{ result.confidence_score }}%;"
-                                                aria-valuenow="{{ result.confidence_score }}"
-                                                aria-valuemin="0"
-                                                aria-valuemax="100"
                                             >
 
                                             </div>
@@ -650,9 +709,6 @@ Project Solution | Tender Compliance AI
                                                 class="progress-bar bg-danger"
                                                 role="progressbar"
                                                 style="width: {{ result.confidence_score }}%;"
-                                                aria-valuenow="{{ result.confidence_score }}"
-                                                aria-valuemin="0"
-                                                aria-valuemax="100"
                                             >
 
                                             </div>
@@ -677,9 +733,7 @@ Project Solution | Tender Compliance AI
                                     </strong>
 
 
-                                    <p
-                                        class="mt-2 mb-0"
-                                    >
+                                    <p class="mt-2 mb-0">
 
                                         {{ result.explanation }}
 
@@ -696,11 +750,213 @@ Project Solution | Tender Compliance AI
                     {% empty %}
 
 
-                        <div
-                            class="alert alert-secondary"
-                        >
+                        <div class="alert alert-secondary">
 
                             No compliance results are available.
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+            </div>
+
+
+        {% endif %}
+
+
+        <!-- RISK ANALYSIS RESULTS -->
+
+        {% if risk_results %}
+
+
+            <div class="card border-0 shadow-sm mb-5">
+
+                <div class="card-body p-4">
+
+
+                    <!-- RISK HEADER -->
+
+                    <div class="mb-4">
+
+                        <h3 class="fw-bold mb-1">
+
+                            ⚠️ Project Risk Analysis Results
+
+                        </h3>
+
+
+                        <p class="text-muted mb-0">
+
+                            Potential risks identified in your
+                            project solution.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- RISK RESULTS -->
+
+                    {% for result in risk_results %}
+
+
+                        <div class="card border mb-3">
+
+                            <div class="card-body">
+
+
+                                <!-- HEADER -->
+
+                                <div
+                                    class="d-flex justify-content-between align-items-start mb-3"
+                                >
+
+                                    <h6 class="fw-bold mb-0">
+
+                                        Requirement
+                                        {{ forloop.counter }}
+
+                                    </h6>
+
+
+                                    <!-- RISK LEVEL -->
+
+                                    {% if result.risk_level == "low" %}
+
+                                        <span
+                                            class="badge bg-success"
+                                        >
+
+                                            🟢 Low Risk
+
+                                        </span>
+
+
+                                    {% elif result.risk_level == "medium" %}
+
+                                        <span
+                                            class="badge bg-warning text-dark"
+                                        >
+
+                                            🟡 Medium Risk
+
+                                        </span>
+
+
+                                    {% else %}
+
+                                        <span
+                                            class="badge bg-danger"
+                                        >
+
+                                            🔴 High Risk
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- REQUIREMENT -->
+
+                                <div class="mb-3">
+
+                                    <strong>
+
+                                        Tender Requirement:
+
+                                    </strong>
+
+
+                                    <p
+                                        class="text-muted mt-1 mb-0"
+                                    >
+
+                                        {{ result.requirement.requirement_text }}
+
+                                    </p>
+
+                                </div>
+
+
+                                <!-- RISK SCORE -->
+
+                                <div class="mb-3">
+
+                                    <strong>
+
+                                        Risk Score:
+
+                                    </strong>
+
+
+                                    <span>
+
+                                        {{ result.risk_score }}/100
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- RISK EXPLANATION -->
+
+                                <div class="mb-3">
+
+                                    <strong>
+
+                                        Risk Analysis:
+
+                                    </strong>
+
+
+                                    <p class="mt-1 mb-0">
+
+                                        {{ result.explanation }}
+
+                                    </p>
+
+                                </div>
+
+
+                                <!-- RECOMMENDATION -->
+
+                                <div
+                                    class="bg-light rounded p-3"
+                                >
+
+                                    <strong>
+
+                                        💡 Recommendation:
+
+                                    </strong>
+
+
+                                    <p class="mt-2 mb-0">
+
+                                        {{ result.recommendation }}
+
+                                    </p>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                    {% empty %}
+
+
+                        <div class="alert alert-secondary">
+
+                            No risk analysis results are available.
 
                         </div>
 
