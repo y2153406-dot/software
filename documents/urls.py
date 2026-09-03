@@ -48,5 +48,30 @@ urlpatterns = [
     views.analyze_improvement_suggestions,
     name="analyze_improvement_suggestions",
 ),
+# REQUIREMENT MANAGEMENT
+
+path(
+    "project/<int:project_id>/requirements/",
+    views.requirement_list,
+    name="requirement_list",
+),
+
+path(
+    "project/<int:project_id>/requirements/add/",
+    views.requirement_create,
+    name="requirement_create",
+),
+
+path(
+    "requirements/<int:requirement_id>/edit/",
+    views.requirement_edit,
+    name="requirement_edit",
+),
+
+path(
+    "requirements/<int:requirement_id>/delete/",
+    views.requirement_delete,
+    name="requirement_delete",
+),
 
 ]

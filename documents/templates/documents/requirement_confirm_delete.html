@@ -1,0 +1,125 @@
+{% extends "projects/base.html" %}
+
+{% block title %}
+Delete Requirement | Tender Compliance AI
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-7">
+
+
+        <!-- BACK BUTTON -->
+
+        <div class="mb-4">
+
+            <a
+                href="{% url 'requirement_list' requirement.document.project.id %}"
+                class="text-decoration-none"
+            >
+                ← Back to Requirements
+            </a>
+
+        </div>
+
+
+        <!-- DELETE CONFIRMATION CARD -->
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-4 p-md-5">
+
+
+                <h2 class="fw-bold text-danger mb-3">
+
+                    🗑️ Delete Requirement
+
+                </h2>
+
+
+                <div class="alert alert-warning">
+
+                    <strong>
+                        Are you sure?
+                    </strong>
+
+                    <div class="mt-2">
+
+                        This requirement will be permanently deleted.
+
+                    </div>
+
+                </div>
+
+
+                <!-- REQUIREMENT PREVIEW -->
+
+                <div class="card border mb-4">
+
+                    <div class="card-body">
+
+                        <strong>
+
+                            Requirement to Delete:
+
+                        </strong>
+
+
+                        <p class="text-muted mt-2 mb-0">
+
+                            {{ requirement.requirement_text }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <div class="d-flex gap-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-danger"
+                        >
+
+                            🗑️ Yes, Delete Requirement
+
+                        </button>
+
+
+                        <a
+                            href="{% url 'requirement_list' requirement.document.project.id %}"
+                            class="btn btn-outline-secondary"
+                        >
+
+                            Cancel
+
+                        </a>
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

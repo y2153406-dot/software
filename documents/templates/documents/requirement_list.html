@@ -1,0 +1,226 @@
+{% extends "projects/base.html" %}
+
+{% block title %}
+Manage Requirements | Tender Compliance AI
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-10">
+
+
+        <!-- HEADER -->
+
+        <div
+            class="d-flex justify-content-between
+            align-items-center mb-4"
+        >
+
+            <div>
+
+                <h2 class="fw-bold mb-1">
+
+                    📋 Manage Tender Requirements
+
+                </h2>
+
+
+                <p class="text-muted mb-0">
+
+                    Project:
+                    <strong>{{ project.name }}</strong>
+
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'requirement_create' project.id %}"
+                class="btn btn-primary"
+            >
+
+                ➕ Add Requirement
+
+            </a>
+
+        </div>
+
+
+        <!-- BACK BUTTON -->
+
+        <div class="mb-4">
+
+            <a
+                href="{% url 'project_solution' project.id %}"
+                class="text-decoration-none"
+            >
+
+                ← Back to Project Solution
+
+            </a>
+
+        </div>
+
+
+        <!-- REQUIREMENTS -->
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-4">
+
+
+                {% if requirements %}
+
+                    <div class="mb-3 text-muted">
+
+                        Total Requirements:
+                        <strong>{{ requirements.count }}</strong>
+
+                    </div>
+
+
+                    {% for requirement in requirements %}
+
+
+                        <div class="card border mb-3">
+
+                            <div class="card-body">
+
+
+                                <!-- HEADER -->
+
+                                <div
+                                    class="d-flex
+                                    justify-content-between
+                                    align-items-start mb-3"
+                                >
+
+                                    <div>
+
+                                        <h6 class="fw-bold mb-1">
+
+                                            Requirement
+                                            {{ forloop.counter }}
+
+                                        </h6>
+
+
+                                        <!-- CATEGORY -->
+
+                                        <span
+                                            class="badge bg-secondary"
+                                        >
+
+                                            {{
+                                                requirement.get_category_display
+                                            }}
+
+                                        </span>
+
+
+                                        <!-- MANDATORY -->
+
+                                        {% if requirement.is_mandatory %}
+
+                                            <span
+                                                class="badge bg-danger"
+                                            >
+
+                                                Mandatory
+
+                                            </span>
+
+                                        {% else %}
+
+                                            <span
+                                                class="badge bg-info text-dark"
+                                            >
+
+                                                Optional
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <!-- ACTIONS -->
+
+                                    <div>
+
+                                        <a
+                                            href="{% url 'requirement_edit' requirement.id %}"
+                                            class="btn btn-sm btn-outline-primary"
+                                        >
+
+                                            ✏️ Edit
+
+                                        </a>
+
+
+                                        <a
+                                            href="{% url 'requirement_delete' requirement.id %}"
+                                            class="btn btn-sm btn-outline-danger"
+                                        >
+
+                                            🗑️ Delete
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- REQUIREMENT TEXT -->
+
+                                <p class="mb-0 text-muted">
+
+                                    {{
+                                        requirement.requirement_text
+                                    }}
+
+                                </p>
+
+
+                            </div>
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                {% else %}
+
+
+                    <div class="alert alert-warning mb-0">
+
+                        No requirements found yet.
+
+                        <br><br>
+
+                        You can manually add a requirement using
+                        the button above.
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

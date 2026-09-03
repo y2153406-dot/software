@@ -1276,3 +1276,149 @@ def analyze_improvement_suggestions(request, project_id):
         "project_solution",
         project_id=project.id,
     )
+
+def requirement_list(request, project_id):
+
+    project = get_object_or_404(
+        Project,
+        id=project_id,
+    )
+
+    document = get_object_or_404(
+        TenderDocument,
+        project=project,
+    )
+
+    requirements = Requirement.objects.filter(
+        document=document
+    ).order_by(
+        "id"
+    )
+
+    return render(
+        request,
+        "documents/requirement_list.html",
+        {
+            "project": project,
+            "document": document,
+            "requirements": requirements,
+        },
+    )
+
+
+def requirement_create(request, project_id):
+
+    project = get_object_or_404(
+        Project,
+        id=project_id,
+    )
+
+    document = get_object_or_404(
+        TenderDocument,
+        project=project,
+    )
+
+    if request.method == "POST":
+
+        form = RequirementForm(
+            request.POST,
+        )
+
+        if form.is_valid():
+
+            requirement = form.save(
+                commit=False,
+            )
+
+            requirement.document = document
+
+            requirement.save()
+
+            return redirect(
+                "requirement_list",
+                project_id=project.id,
+            )
+
+    else:
+
+        form = RequirementForm()
+
+    return render(
+        request,
+        "documents/requirement_form.html",
+        {
+            "project": project,
+            "form": form,
+            "page_title": "Add Requirement",
+        },
+    )
+
+
+def requirement_edit(request, requirement_id):
+
+    requirement = get_object_or_404(
+        Requirement,
+        id=requirement_id,
+    )
+
+    project = requirement.document.project
+
+    if request.method == "POST":
+
+        form = RequirementForm(
+            request.POST,
+            instance=requirement,
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect(
+                "requirement_list",
+                project_id=project.id,
+            )
+
+    else:
+
+        form = RequirementForm(
+            instance=requirement,
+        )
+
+    return render(
+        request,
+        "documents/requirement_form.html",
+        {
+            "project": project,
+            "form": form,
+            "requirement": requirement,
+            "page_title": "Edit Requirement",
+        },
+    )
+
+
+def requirement_delete(request, requirement_id):
+
+    requirement = get_object_or_404(
+        Requirement,
+        id=requirement_id,
+    )
+
+    project_id = requirement.document.project.id
+
+    if request.method == "POST":
+
+        requirement.delete()
+
+        return redirect(
+            "requirement_list",
+            project_id=project_id,
+        )
+
+    return render(
+        request,
+        "documents/requirement_confirm_delete.html",
+        {
+            "requirement": requirement,
+        },
+    )

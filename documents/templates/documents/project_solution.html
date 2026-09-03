@@ -1,5 +1,6 @@
 {% extends "projects/base.html" %}
 
+
 {% block title %}
 Project Solution | Tender Compliance AI
 {% endblock %}
@@ -187,6 +188,60 @@ Project Solution | Tender Compliance AI
                 </form>
 
 
+                <!-- REQUIREMENT MANAGEMENT -->
+
+                <hr class="my-4">
+
+
+                <div>
+
+                    <h5 class="fw-bold">
+
+                        📋 Requirement Management
+
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        View, add, edit, and delete extracted
+                        tender requirements for this project.
+
+                    </p>
+
+
+                    <div class="d-flex flex-wrap gap-2">
+
+
+                        <!-- MANAGE REQUIREMENTS -->
+
+                        <a
+                            href="{% url 'requirement_list' project.id %}"
+                            class="btn btn-outline-primary"
+                        >
+
+                            📋 Manage Requirements
+
+                        </a>
+
+
+                        <!-- ADD REQUIREMENT -->
+
+                        <a
+                            href="{% url 'requirement_create' project.id %}"
+                            class="btn btn-primary"
+                        >
+
+                            ➕ Add Requirement
+
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+
                 {% if solution %}
 
 
@@ -283,7 +338,7 @@ Project Solution | Tender Compliance AI
                     {% endif %}
 
 
-                    <!-- RISK ANALYSIS -->
+                    <!-- PROJECT RISK ANALYSIS -->
 
                     <hr class="my-4">
 
@@ -345,6 +400,8 @@ Project Solution | Tender Compliance AI
                 <div class="card-body p-4">
 
 
+                    <!-- DASHBOARD HEADER -->
+
                     <div
                         class="d-flex justify-content-between
                         align-items-center mb-4"
@@ -388,10 +445,12 @@ Project Solution | Tender Compliance AI
                     </div>
 
 
+                    <!-- DASHBOARD CARDS -->
+
                     <div class="row">
 
 
-                        <!-- TOTAL -->
+                        <!-- TOTAL REQUIREMENTS -->
 
                         <div class="col-md-3 mb-3">
 
@@ -508,21 +567,19 @@ Project Solution | Tender Compliance AI
 
                     <!-- READINESS STATUS -->
 
-                    {% if readiness_status %}
+                    <div
+                        class="alert alert-{{ readiness_class }} mb-0"
+                    >
 
-                        <div class="alert alert-{{ readiness_class }} mb-0">
+                        <strong>
 
-                            <strong>
+                            Tender Readiness:
 
-                                Tender Readiness:
+                        </strong>
 
-                            </strong>
+                        {{ readiness_status }}
 
-                            {{ readiness_status }}
-
-                        </div>
-
-                    {% endif %}
+                    </div>
 
 
                 </div>
@@ -532,7 +589,7 @@ Project Solution | Tender Compliance AI
         {% endif %}
 
 
-        <!-- COMPLIANCE RESULTS -->
+        <!-- DETAILED COMPLIANCE RESULTS -->
 
         {% if compliance_results %}
 
@@ -555,6 +612,8 @@ Project Solution | Tender Compliance AI
 
                             <div class="card-body">
 
+
+                                <!-- HEADER -->
 
                                 <div
                                     class="d-flex justify-content-between
@@ -602,6 +661,8 @@ Project Solution | Tender Compliance AI
                                 </div>
 
 
+                                <!-- REQUIREMENT -->
+
                                 <div class="mb-3">
 
                                     <strong>
@@ -620,6 +681,8 @@ Project Solution | Tender Compliance AI
                                 </div>
 
 
+                                <!-- CONFIDENCE SCORE -->
+
                                 <div class="mb-3">
 
                                     <strong>
@@ -632,6 +695,8 @@ Project Solution | Tender Compliance AI
 
                                 </div>
 
+
+                                <!-- ANALYSIS -->
 
                                 <div>
 
@@ -706,6 +771,8 @@ Project Solution | Tender Compliance AI
                             <div class="card-body">
 
 
+                                <!-- HEADER -->
+
                                 <div
                                     class="d-flex justify-content-between
                                     align-items-start mb-3"
@@ -752,6 +819,8 @@ Project Solution | Tender Compliance AI
                                 </div>
 
 
+                                <!-- REQUIREMENT -->
+
                                 <div class="mb-3">
 
                                     <strong>
@@ -769,6 +838,8 @@ Project Solution | Tender Compliance AI
 
                                 </div>
 
+
+                                <!-- SUGGESTION -->
 
                                 <div>
 
@@ -812,11 +883,25 @@ Project Solution | Tender Compliance AI
                 <div class="card-body p-4">
 
 
-                    <h4 class="fw-bold mb-4">
+                    <div
+                        class="d-flex justify-content-between
+                        align-items-center mb-4"
+                    >
 
-                        🛡️ Project Risk Analysis Results
+                        <h4 class="fw-bold mb-0">
 
-                    </h4>
+                            🛡️ Project Risk Analysis Results
+
+                        </h4>
+
+
+                        <span class="badge bg-secondary">
+
+                            {{ risk_results|length }} Risks
+
+                        </span>
+
+                    </div>
 
 
                     {% for risk in risk_results %}
@@ -943,7 +1028,7 @@ Project Solution | Tender Compliance AI
 
                                     <p class="mt-1 mb-0">
 
-                                        {{ risk.recommendation }}
+                                        💡 {{ risk.recommendation }}
 
                                     </p>
 
@@ -968,5 +1053,6 @@ Project Solution | Tender Compliance AI
     </div>
 
 </div>
+
 
 {% endblock %}
