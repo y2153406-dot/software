@@ -3,6 +3,17 @@ from django.shortcuts import (
     redirect,
     render,
 )
+from .improvement_ai import (
+    generate_improvement_suggestions,
+)
+
+from .fallback_improvement import (
+    generate_improvement_suggestions_fallback,
+)
+
+from .models import (
+    ImprovementSuggestion,
+)
 
 from projects.models import Project
 
@@ -214,18 +225,45 @@ def project_solution(request, project_id):
         )
 
     # Get compliance results
+
     compliance_results = ComplianceResult.objects.filter(
-        project=project
+        project=project,
     ).select_related(
-        "requirement"
+        "requirement",
     )
-    risk_results = RiskAnalysis.objects.filter(
-    project=project,
-    solution=solution,
-).select_related(
-    "requirement"
-)
+
+    # Get risk analysis results
+
+    risk_results = RiskAnalysis.objects.none()
+
+    if solution:
+
+        risk_results = RiskAnalysis.objects.filter(
+            project=project,
+            solution=solution,
+        ).select_related(
+            "requirement",
+        )
+
+    # Get improvement suggestions
+
+    improvement_suggestions = (
+        ImprovementSuggestion.objects.none()
+    )
+
+    if solution:
+
+        improvement_suggestions = (
+            ImprovementSuggestion.objects.filter(
+                project=project,
+                solution=solution,
+            ).select_related(
+                "requirement",
+            )
+        )
+
     # Dashboard counts
+
     total_requirements = compliance_results.count()
 
     compliant_count = compliance_results.filter(
@@ -241,6 +279,7 @@ def project_solution(request, project_id):
     ).count()
 
     # Calculate overall compliance score
+
     overall_score = 0
 
     if total_requirements > 0:
@@ -266,7 +305,9 @@ def project_solution(request, project_id):
         )
 
     # Tender readiness status
+
     readiness_status = "Not Analyzed"
+
     readiness_class = "secondary"
 
     if total_requirements > 0:
@@ -274,21 +315,25 @@ def project_solution(request, project_id):
         if overall_score >= 80:
 
             readiness_status = "Excellent"
+
             readiness_class = "success"
 
         elif overall_score >= 60:
 
             readiness_status = "Good"
+
             readiness_class = "primary"
 
         elif overall_score >= 40:
 
             readiness_status = "Needs Improvement"
+
             readiness_class = "warning"
 
         else:
 
             readiness_status = "High Risk"
+
             readiness_class = "danger"
 
     return render(
@@ -299,24 +344,48 @@ def project_solution(request, project_id):
             "form": form,
             "solution": solution,
 
-            "compliance_results": compliance_results,
+            "compliance_results": (
+                compliance_results
+            ),
 
-            "total_requirements": total_requirements,
+            "risk_results": (
+                risk_results
+            ),
 
-            "compliant_count": compliant_count,
+            "improvement_suggestions": (
+                improvement_suggestions
+            ),
 
-            "partial_count": partial_count,
+            "total_requirements": (
+                total_requirements
+            ),
 
-            "non_compliant_count": non_compliant_count,
+            "compliant_count": (
+                compliant_count
+            ),
 
-            "overall_score": overall_score,
+            "partial_count": (
+                partial_count
+            ),
 
-            "readiness_status": readiness_status,
+            "non_compliant_count": (
+                non_compliant_count
+            ),
 
-            "readiness_class": readiness_class,
-            "risk_results": risk_results,
+            "overall_score": (
+                overall_score
+            ),
+
+            "readiness_status": (
+                readiness_status
+            ),
+
+            "readiness_class": (
+                readiness_class
+            ),
         },
     )
+    
 def analyze_project_compliance(request, project_id):
 
     project = get_object_or_404(
@@ -1073,3 +1142,137 @@ def download_compliance_report_pdf(request, project_id):
     )
 
     return response
+
+def analyze_improvement_suggestions(request, project_id):
+
+    project = get_object_or_404(
+        Project,
+        id=project_id,
+    )
+
+    if request.method != "POST":
+
+        return redirect(
+            "project_solution",
+            project_id=project.id,
+        )
+
+    solution = get_object_or_404(
+        ProjectSolution,
+        project=project,
+    )
+
+    failed_results = ComplianceResult.objects.filter(
+        project=project,
+        solution=solution,
+        status__in=[
+            "partial",
+            "non_compliant",
+        ],
+    ).select_related(
+        "requirement"
+    )
+
+    if not failed_results.exists():
+
+        return redirect(
+            "project_solution",
+            project_id=project.id,
+        )
+
+    try:
+
+        # First try Gemini AI
+        try:
+
+            analysis_result = (
+                generate_improvement_suggestions(
+                    failed_results,
+                    solution.description,
+                )
+            )
+
+            print(
+                "GEMINI IMPROVEMENT ANALYSIS SUCCESSFUL"
+            )
+
+        # If Gemini fails, use fallback
+        except Exception as error:
+
+            print(
+                "AI IMPROVEMENT ANALYSIS FAILED."
+            )
+
+            print(
+                "USING FALLBACK IMPROVEMENT SYSTEM:",
+                error,
+            )
+
+            analysis_result = (
+                generate_improvement_suggestions_fallback(
+                    failed_results,
+                    solution.description,
+                )
+            )
+
+            print(
+                "FALLBACK IMPROVEMENT ANALYSIS SUCCESSFUL"
+            )
+
+    except Exception as error:
+
+        print(
+            "IMPROVEMENT SUGGESTION ERROR:",
+            error,
+        )
+
+        return redirect(
+            "project_solution",
+            project_id=project.id,
+        )
+
+    suggestions = analysis_result.get(
+        "suggestions",
+        [],
+    )
+
+    # Delete old suggestions before saving new ones
+    ImprovementSuggestion.objects.filter(
+        project=project,
+        solution=solution,
+    ).delete()
+
+    for item in suggestions:
+
+        requirement_id = item.get(
+            "requirement_id"
+        )
+
+        try:
+
+            requirement = Requirement.objects.get(
+                id=requirement_id,
+            )
+
+        except Requirement.DoesNotExist:
+
+            continue
+
+        ImprovementSuggestion.objects.create(
+            project=project,
+            solution=solution,
+            requirement=requirement,
+            suggestion=item.get(
+                "suggestion",
+                "",
+            ),
+            priority=item.get(
+                "priority",
+                "medium",
+            ),
+        )
+
+    return redirect(
+        "project_solution",
+        project_id=project.id,
+    )

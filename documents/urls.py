@@ -43,5 +43,10 @@ urlpatterns = [
     views.download_compliance_report_pdf,
     name="download_compliance_report_pdf",
 ),
+    path(
+    "project/<int:project_id>/improvement-suggestions/",
+    views.analyze_improvement_suggestions,
+    name="analyze_improvement_suggestions",
+),
 
 ]

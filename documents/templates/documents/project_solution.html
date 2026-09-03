@@ -84,7 +84,6 @@ Project Solution | Tender Compliance AI
 
                         </strong>
 
-
                         <div class="small mt-1">
 
                             You can update your solution details below.
@@ -188,14 +187,15 @@ Project Solution | Tender Compliance AI
                 </form>
 
 
-                <!-- AI COMPLIANCE ANALYSIS -->
-
                 {% if solution %}
+
+
+                    <!-- AI COMPLIANCE ANALYSIS -->
 
                     <hr class="my-4">
 
 
-                    <div class="mt-4">
+                    <div>
 
                         <h5 class="fw-bold">
 
@@ -235,12 +235,60 @@ Project Solution | Tender Compliance AI
                     </div>
 
 
+                    <!-- IMPROVEMENT SUGGESTIONS -->
+
+                    {% if compliance_results %}
+
+                        <hr class="my-4">
+
+
+                        <div>
+
+                            <h5 class="fw-bold">
+
+                                💡 Compliance Improvement Suggestions
+
+                            </h5>
+
+
+                            <p class="text-muted">
+
+                                Generate actionable suggestions to improve
+                                partial and non-compliant requirements.
+
+                            </p>
+
+
+                            <form
+                                method="POST"
+                                action="{% url 'analyze_improvement_suggestions' project.id %}"
+                            >
+
+                                {% csrf_token %}
+
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-warning"
+                                >
+
+                                    💡 Generate Improvement Suggestions
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endif %}
+
+
                     <!-- RISK ANALYSIS -->
 
                     <hr class="my-4">
 
 
-                    <div class="mt-4">
+                    <div>
 
                         <h5 class="fw-bold">
 
@@ -251,14 +299,12 @@ Project Solution | Tender Compliance AI
 
                         <p class="text-muted">
 
-                            Identify potential risks in your
-                            project based on tender requirements
-                            and your proposed solution.
+                            Identify potential risks in your project
+                            based on tender requirements and your
+                            proposed solution.
 
                         </p>
 
-
-                        <!-- RISK ANALYSIS FORM -->
 
                         <form
                             method="POST"
@@ -270,7 +316,7 @@ Project Solution | Tender Compliance AI
 
                             <button
                                 type="submit"
-                                class="btn btn-warning"
+                                class="btn btn-outline-danger"
                             >
 
                                 🛡️ Analyze Project Risks
@@ -294,109 +340,77 @@ Project Solution | Tender Compliance AI
 
         {% if compliance_results %}
 
+            <div class="card border-0 shadow-sm mb-4">
 
-            <div class="mb-4">
+                <div class="card-body p-4">
 
-                <div
-                    class="d-flex justify-content-between align-items-center"
-                >
-
-                    <div>
-
-                        <h3 class="fw-bold mb-1">
-
-                            📊 Compliance Dashboard
-
-                        </h3>
-
-
-                        <p class="text-muted mb-0">
-
-                            Overview of your project solution
-                            against tender requirements.
-
-                        </p>
-
-                    </div>
-
-
-                    <div class="text-end">
-
-                        <small
-                            class="text-muted d-block mb-2"
-                        >
-
-                            Total Requirements:
-
-                            <strong>
-
-                                {{ total_requirements }}
-
-                            </strong>
-
-                        </small>
-
-
-                        <a
-                            href="{% url 'compliance_report' project.id %}"
-                            class="btn btn-outline-primary"
-                        >
-
-                            📄 View Full Report
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- SUMMARY CARDS -->
-
-            <div class="row g-3 mb-4">
-
-
-                <!-- OVERALL SCORE -->
-
-                <div class="col-md-3">
 
                     <div
-                        class="card border-primary shadow-sm h-100"
+                        class="d-flex justify-content-between
+                        align-items-center mb-4"
                     >
 
-                        <div class="card-body">
+                        <div>
 
-                            <div class="text-muted small">
+                            <h4 class="fw-bold mb-1">
+
+                                📊 Compliance Dashboard
+
+                            </h4>
+
+
+                            <p class="text-muted mb-0">
+
+                                Overall tender compliance overview.
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="text-end">
+
+                            <div class="small text-muted">
 
                                 Overall Score
 
                             </div>
 
 
-                            <h2
-                                class="fw-bold text-primary mt-2"
-                            >
+                            <h2 class="fw-bold text-primary mb-0">
 
                                 {{ overall_score }}%
 
                             </h2>
 
+                        </div>
 
-                            <div
-                                class="progress"
-                                style="height: 8px;"
-                            >
+                    </div>
 
-                                <div
-                                    class="progress-bar"
-                                    role="progressbar"
-                                    style="width: {{ overall_score }}%;"
-                                    aria-valuenow="{{ overall_score }}"
-                                    aria-valuemin="0"
-                                    aria-valuemax="100"
-                                >
+
+                    <div class="row">
+
+
+                        <!-- TOTAL -->
+
+                        <div class="col-md-3 mb-3">
+
+                            <div class="card border h-100">
+
+                                <div class="card-body text-center">
+
+                                    <h3 class="fw-bold">
+
+                                        {{ total_requirements }}
+
+                                    </h3>
+
+
+                                    <p class="text-muted mb-0">
+
+                                        Total Requirements
+
+                                    </p>
 
                                 </div>
 
@@ -404,200 +418,159 @@ Project Solution | Tender Compliance AI
 
                         </div>
 
-                    </div>
 
-                </div>
+                        <!-- COMPLIANT -->
 
+                        <div class="col-md-3 mb-3">
 
-                <!-- COMPLIANT -->
+                            <div class="card border-success h-100">
 
-                <div class="col-md-3">
+                                <div class="card-body text-center">
 
-                    <div
-                        class="card border-success shadow-sm h-100"
-                    >
+                                    <h3 class="fw-bold text-success">
 
-                        <div class="card-body">
+                                        {{ compliant_count }}
 
-                            <div
-                                class="text-success small fw-semibold"
-                            >
-
-                                ✓ Compliant
-
-                            </div>
+                                    </h3>
 
 
-                            <h2
-                                class="fw-bold text-success mt-2"
-                            >
+                                    <p class="text-muted mb-0">
 
-                                {{ compliant_count }}
+                                        Compliant
 
-                            </h2>
+                                    </p>
 
-
-                            <small class="text-muted">
-
-                                Requirements satisfied
-
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- PARTIAL -->
-
-                <div class="col-md-3">
-
-                    <div
-                        class="card border-warning shadow-sm h-100"
-                    >
-
-                        <div class="card-body">
-
-                            <div
-                                class="text-warning small fw-semibold"
-                            >
-
-                                ⚠ Partial
+                                </div>
 
                             </div>
 
-
-                            <h2
-                                class="fw-bold text-warning mt-2"
-                            >
-
-                                {{ partial_count }}
-
-                            </h2>
-
-
-                            <small class="text-muted">
-
-                                Partially satisfied
-
-                            </small>
-
                         </div>
 
-                    </div>
 
-                </div>
+                        <!-- PARTIAL -->
+
+                        <div class="col-md-3 mb-3">
+
+                            <div class="card border-warning h-100">
+
+                                <div class="card-body text-center">
+
+                                    <h3 class="fw-bold text-warning">
+
+                                        {{ partial_count }}
+
+                                    </h3>
 
 
-                <!-- NON-COMPLIANT -->
+                                    <p class="text-muted mb-0">
 
-                <div class="col-md-3">
+                                        Partial
 
-                    <div
-                        class="card border-danger shadow-sm h-100"
-                    >
+                                    </p>
 
-                        <div class="card-body">
-
-                            <div
-                                class="text-danger small fw-semibold"
-                            >
-
-                                ✕ Non-Compliant
+                                </div>
 
                             </div>
 
-
-                            <h2
-                                class="fw-bold text-danger mt-2"
-                            >
-
-                                {{ non_compliant_count }}
-
-                            </h2>
+                        </div>
 
 
-                            <small class="text-muted">
+                        <!-- NON-COMPLIANT -->
 
-                                Requirements missing
+                        <div class="col-md-3 mb-3">
 
-                            </small>
+                            <div class="card border-danger h-100">
+
+                                <div class="card-body text-center">
+
+                                    <h3 class="fw-bold text-danger">
+
+                                        {{ non_compliant_count }}
+
+                                    </h3>
+
+
+                                    <p class="text-muted mb-0">
+
+                                        Non-Compliant
+
+                                    </p>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
+
                     </div>
 
-                </div>
 
+                    <!-- READINESS STATUS -->
+
+                    {% if readiness_status %}
+
+                        <div class="alert alert-{{ readiness_class }} mb-0">
+
+                            <strong>
+
+                                Tender Readiness:
+
+                            </strong>
+
+                            {{ readiness_status }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
 
             </div>
 
+        {% endif %}
 
-            <!-- REQUIREMENT ANALYSIS -->
 
-            <div class="card border-0 shadow-sm mb-5">
+        <!-- COMPLIANCE RESULTS -->
+
+        {% if compliance_results %}
+
+            <div class="card border-0 shadow-sm mb-4">
 
                 <div class="card-body p-4">
 
 
-                    <!-- RESULTS HEADER -->
+                    <h4 class="fw-bold mb-4">
 
-                    <div
-                        class="d-flex justify-content-between align-items-center mb-4"
-                    >
+                        📋 Detailed Compliance Analysis
 
-                        <div>
+                    </h4>
 
-                            <h4 class="fw-bold mb-1">
-
-                                📋 Requirement Analysis
-
-                            </h4>
-
-
-                            <p class="text-muted mb-0">
-
-                                {{ total_requirements }}
-                                requirements analyzed
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- RESULTS LOOP -->
 
                     {% for result in compliance_results %}
 
 
                         <div class="card border mb-3">
 
-                            <div class="card-body p-4">
+                            <div class="card-body">
 
-
-                                <!-- RESULT HEADER -->
 
                                 <div
-                                    class="d-flex justify-content-between align-items-start mb-3"
+                                    class="d-flex justify-content-between
+                                    align-items-start mb-3"
                                 >
 
                                     <h6 class="fw-bold mb-0">
 
-                                        Requirement
-                                        {{ forloop.counter }}
+                                        Requirement {{ forloop.counter }}
 
                                     </h6>
 
 
                                     {% if result.status == "compliant" %}
 
-                                        <span
-                                            class="badge bg-success"
-                                        >
+                                        <span class="badge bg-success">
 
                                             ✓ Compliant
 
@@ -617,9 +590,7 @@ Project Solution | Tender Compliance AI
 
                                     {% else %}
 
-                                        <span
-                                            class="badge bg-danger"
-                                        >
+                                        <span class="badge bg-danger">
 
                                             ✕ Non-Compliant
 
@@ -627,12 +598,11 @@ Project Solution | Tender Compliance AI
 
                                     {% endif %}
 
+
                                 </div>
 
 
-                                <!-- REQUIREMENT -->
-
-                                <div class="mb-4">
+                                <div class="mb-3">
 
                                     <strong>
 
@@ -641,9 +611,7 @@ Project Solution | Tender Compliance AI
                                     </strong>
 
 
-                                    <p
-                                        class="text-muted mt-2 mb-0"
-                                    >
+                                    <p class="text-muted mt-1 mb-0">
 
                                         {{ result.requirement.requirement_text }}
 
@@ -652,88 +620,29 @@ Project Solution | Tender Compliance AI
                                 </div>
 
 
-                                <!-- CONFIDENCE SCORE -->
+                                <div class="mb-3">
 
-                                <div class="mb-4">
+                                    <strong>
 
-                                    <div
-                                        class="d-flex justify-content-between"
-                                    >
+                                        Confidence Score:
 
-                                        <strong>
+                                    </strong>
 
-                                            Confidence Score
-
-                                        </strong>
-
-
-                                        <span class="fw-semibold">
-
-                                            {{ result.confidence_score }}%
-
-                                        </span>
-
-                                    </div>
-
-
-                                    <div
-                                        class="progress mt-2"
-                                        style="height: 8px;"
-                                    >
-
-                                        {% if result.status == "compliant" %}
-
-                                            <div
-                                                class="progress-bar bg-success"
-                                                role="progressbar"
-                                                style="width: {{ result.confidence_score }}%;"
-                                            >
-
-                                            </div>
-
-
-                                        {% elif result.status == "partial" %}
-
-                                            <div
-                                                class="progress-bar bg-warning"
-                                                role="progressbar"
-                                                style="width: {{ result.confidence_score }}%;"
-                                            >
-
-                                            </div>
-
-
-                                        {% else %}
-
-                                            <div
-                                                class="progress-bar bg-danger"
-                                                role="progressbar"
-                                                style="width: {{ result.confidence_score }}%;"
-                                            >
-
-                                            </div>
-
-                                        {% endif %}
-
-                                    </div>
+                                    {{ result.confidence_score }}%
 
                                 </div>
 
 
-                                <!-- ANALYSIS -->
-
-                                <div
-                                    class="bg-light rounded p-3"
-                                >
+                                <div>
 
                                     <strong>
 
-                                        🧠 Analysis
+                                        Analysis:
 
                                     </strong>
 
 
-                                    <p class="mt-2 mb-0">
+                                    <p class="mt-1 mb-0">
 
                                         {{ result.explanation }}
 
@@ -747,12 +656,139 @@ Project Solution | Tender Compliance AI
                         </div>
 
 
-                    {% empty %}
+                    {% endfor %}
 
 
-                        <div class="alert alert-secondary">
+                    <!-- REPORT BUTTON -->
 
-                            No compliance results are available.
+                    <div class="mt-4">
+
+                        <a
+                            href="{% url 'compliance_report' project.id %}"
+                            class="btn btn-outline-primary"
+                        >
+
+                            📄 View Full Compliance Report
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- IMPROVEMENT SUGGESTIONS RESULTS -->
+
+        {% if improvement_suggestions %}
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body p-4">
+
+
+                    <h4 class="fw-bold mb-4">
+
+                        💡 Recommended Improvements
+
+                    </h4>
+
+
+                    {% for suggestion in improvement_suggestions %}
+
+
+                        <div class="card border mb-3">
+
+                            <div class="card-body">
+
+
+                                <div
+                                    class="d-flex justify-content-between
+                                    align-items-start mb-3"
+                                >
+
+                                    <h6 class="fw-bold mb-0">
+
+                                        Requirement {{ forloop.counter }}
+
+                                    </h6>
+
+
+                                    {% if suggestion.priority == "high" %}
+
+                                        <span class="badge bg-danger">
+
+                                            🔴 High Priority
+
+                                        </span>
+
+
+                                    {% elif suggestion.priority == "medium" %}
+
+                                        <span
+                                            class="badge bg-warning text-dark"
+                                        >
+
+                                            🟡 Medium Priority
+
+                                        </span>
+
+
+                                    {% else %}
+
+                                        <span class="badge bg-success">
+
+                                            🟢 Low Priority
+
+                                        </span>
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                                <div class="mb-3">
+
+                                    <strong>
+
+                                        Tender Requirement:
+
+                                    </strong>
+
+
+                                    <p class="text-muted mt-1 mb-0">
+
+                                        {{ suggestion.requirement.requirement_text }}
+
+                                    </p>
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+
+                                        Recommended Improvement:
+
+                                    </strong>
+
+
+                                    <p class="mt-2 mb-0">
+
+                                        {{ suggestion.suggestion }}
+
+                                    </p>
+
+                                </div>
+
+
+                            </div>
 
                         </div>
 
@@ -764,7 +800,6 @@ Project Solution | Tender Compliance AI
 
             </div>
 
-
         {% endif %}
 
 
@@ -772,36 +807,19 @@ Project Solution | Tender Compliance AI
 
         {% if risk_results %}
 
-
-            <div class="card border-0 shadow-sm mb-5">
+            <div class="card border-0 shadow-sm mb-4">
 
                 <div class="card-body p-4">
 
 
-                    <!-- RISK HEADER -->
+                    <h4 class="fw-bold mb-4">
 
-                    <div class="mb-4">
+                        🛡️ Project Risk Analysis Results
 
-                        <h3 class="fw-bold mb-1">
-
-                            ⚠️ Project Risk Analysis Results
-
-                        </h3>
+                    </h4>
 
 
-                        <p class="text-muted mb-0">
-
-                            Potential risks identified in your
-                            project solution.
-
-                        </p>
-
-                    </div>
-
-
-                    <!-- RISK RESULTS -->
-
-                    {% for result in risk_results %}
+                    {% for risk in risk_results %}
 
 
                         <div class="card border mb-3">
@@ -809,34 +827,30 @@ Project Solution | Tender Compliance AI
                             <div class="card-body">
 
 
-                                <!-- HEADER -->
+                                <!-- RISK HEADER -->
 
                                 <div
-                                    class="d-flex justify-content-between align-items-start mb-3"
+                                    class="d-flex justify-content-between
+                                    align-items-start mb-3"
                                 >
 
                                     <h6 class="fw-bold mb-0">
 
-                                        Requirement
-                                        {{ forloop.counter }}
+                                        Risk {{ forloop.counter }}
 
                                     </h6>
 
 
-                                    <!-- RISK LEVEL -->
+                                    {% if risk.risk_level == "high" %}
 
-                                    {% if result.risk_level == "low" %}
+                                        <span class="badge bg-danger">
 
-                                        <span
-                                            class="badge bg-success"
-                                        >
-
-                                            🟢 Low Risk
+                                            🔴 High Risk
 
                                         </span>
 
 
-                                    {% elif result.risk_level == "medium" %}
+                                    {% elif risk.risk_level == "medium" %}
 
                                         <span
                                             class="badge bg-warning text-dark"
@@ -849,20 +863,19 @@ Project Solution | Tender Compliance AI
 
                                     {% else %}
 
-                                        <span
-                                            class="badge bg-danger"
-                                        >
+                                        <span class="badge bg-success">
 
-                                            🔴 High Risk
+                                            🟢 Low Risk
 
                                         </span>
 
                                     {% endif %}
 
+
                                 </div>
 
 
-                                <!-- REQUIREMENT -->
+                                <!-- TENDER REQUIREMENT -->
 
                                 <div class="mb-3">
 
@@ -873,11 +886,9 @@ Project Solution | Tender Compliance AI
                                     </strong>
 
 
-                                    <p
-                                        class="text-muted mt-1 mb-0"
-                                    >
+                                    <p class="text-muted mt-1 mb-0">
 
-                                        {{ result.requirement.requirement_text }}
+                                        {{ risk.requirement.requirement_text }}
 
                                     </p>
 
@@ -894,17 +905,12 @@ Project Solution | Tender Compliance AI
 
                                     </strong>
 
-
-                                    <span>
-
-                                        {{ result.risk_score }}/100
-
-                                    </span>
+                                    {{ risk.risk_score }}/100
 
                                 </div>
 
 
-                                <!-- RISK EXPLANATION -->
+                                <!-- RISK ANALYSIS -->
 
                                 <div class="mb-3">
 
@@ -917,7 +923,7 @@ Project Solution | Tender Compliance AI
 
                                     <p class="mt-1 mb-0">
 
-                                        {{ result.explanation }}
+                                        {{ risk.explanation }}
 
                                     </p>
 
@@ -926,20 +932,18 @@ Project Solution | Tender Compliance AI
 
                                 <!-- RECOMMENDATION -->
 
-                                <div
-                                    class="bg-light rounded p-3"
-                                >
+                                <div>
 
                                     <strong>
 
-                                        💡 Recommendation:
+                                        Recommendation:
 
                                     </strong>
 
 
-                                    <p class="mt-2 mb-0">
+                                    <p class="mt-1 mb-0">
 
-                                        {{ result.recommendation }}
+                                        {{ risk.recommendation }}
 
                                     </p>
 
@@ -951,23 +955,12 @@ Project Solution | Tender Compliance AI
                         </div>
 
 
-                    {% empty %}
-
-
-                        <div class="alert alert-secondary">
-
-                            No risk analysis results are available.
-
-                        </div>
-
-
                     {% endfor %}
 
 
                 </div>
 
             </div>
-
 
         {% endif %}
 

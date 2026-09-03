@@ -197,3 +197,46 @@ class RiskAnalysis(models.Model):
             f"{self.requirement.id} - "
             f"{self.risk_level}"
         )
+
+class ImprovementSuggestion(models.Model):
+
+    requirement = models.ForeignKey(
+        Requirement,
+        on_delete=models.CASCADE,
+        related_name="improvement_suggestions",
+    )
+
+    solution = models.ForeignKey(
+        ProjectSolution,
+        on_delete=models.CASCADE,
+        related_name="improvement_suggestions",
+    )
+
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="improvement_suggestions",
+    )
+
+    suggestion = models.TextField()
+
+    priority = models.CharField(
+        max_length=20,
+        choices=[
+            ("high", "High"),
+            ("medium", "Medium"),
+            ("low", "Low"),
+        ],
+        default="medium",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    def __str__(self):
+
+        return (
+            f"Suggestion for Requirement "
+            f"{self.requirement.id}"
+        )
