@@ -44,6 +44,20 @@ from .utils import (
     extract_text_from_pdf,
 )
 
+from django.http import HttpResponse
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+)
+
 def tender_document_upload(request, project_id):
 
     project = get_object_or_404(
@@ -770,3 +784,292 @@ def analyze_project_risks(request, project_id):
         "project_solution",
         project_id=project.id,
     )
+def download_compliance_report_pdf(request, project_id):
+
+    project = get_object_or_404(
+        Project,
+        id=project_id,
+    )
+
+    solution = get_object_or_404(
+        ProjectSolution,
+        project=project,
+    )
+
+    compliance_results = ComplianceResult.objects.filter(
+        project=project,
+        solution=solution,
+    ).select_related(
+        "requirement"
+    )
+
+    total_requirements = compliance_results.count()
+
+    compliant_count = compliance_results.filter(
+        status="compliant"
+    ).count()
+
+    partial_count = compliance_results.filter(
+        status="partial"
+    ).count()
+
+    non_compliant_count = compliance_results.filter(
+        status="non_compliant"
+    ).count()
+
+    # Calculate overall compliance score
+    overall_score = 0
+
+    if total_requirements > 0:
+
+        total_score = 0
+
+        for result in compliance_results:
+
+            if result.status == "compliant":
+
+                total_score += 100
+
+            elif result.status == "partial":
+
+                total_score += 50
+
+        overall_score = round(
+            total_score / total_requirements
+        )
+
+    # Create PDF response
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
+
+    filename = (
+        f"compliance_report_project_{project.id}.pdf"
+    )
+
+    response[
+        "Content-Disposition"
+    ] = f'attachment; filename="{filename}"'
+
+    # Create PDF document
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=A4,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=40,
+    )
+
+    elements = []
+
+    styles = getSampleStyleSheet()
+
+    # Title
+    elements.append(
+        Paragraph(
+            "Tender Compliance Report",
+            styles["Title"],
+        )
+    )
+
+    elements.append(
+        Spacer(
+            1,
+            0.2 * inch,
+        )
+    )
+
+    # Project information
+    elements.append(
+        Paragraph(
+            f"<b>Project:</b> {project.name}",
+            styles["Normal"],
+        )
+    )
+
+    elements.append(
+        Paragraph(
+            f"<b>Solution:</b> {solution.title}",
+            styles["Normal"],
+        )
+    )
+
+    elements.append(
+        Spacer(
+            1,
+            0.3 * inch,
+        )
+    )
+
+    # Summary table
+    summary_data = [
+        [
+            "Total Requirements",
+            "Compliant",
+            "Partial",
+            "Non-Compliant",
+            "Overall Score",
+        ],
+        [
+            str(total_requirements),
+            str(compliant_count),
+            str(partial_count),
+            str(non_compliant_count),
+            f"{overall_score}%",
+        ],
+    ]
+
+    summary_table = Table(
+        summary_data,
+        colWidths=[
+            1.3 * inch,
+            1 * inch,
+            0.9 * inch,
+            1.2 * inch,
+            1 * inch,
+        ],
+    )
+
+    summary_table.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.darkblue,
+                ),
+                (
+                    "TEXTCOLOR",
+                    (0, 0),
+                    (-1, 0),
+                    colors.white,
+                ),
+                (
+                    "ALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "CENTER",
+                ),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold",
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.5,
+                    colors.grey,
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    10,
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    10,
+                ),
+            ]
+        )
+    )
+
+    elements.append(
+        summary_table
+    )
+
+    elements.append(
+        Spacer(
+            1,
+            0.4 * inch,
+        )
+    )
+
+    # Detailed analysis heading
+    elements.append(
+        Paragraph(
+            "Detailed Compliance Analysis",
+            styles["Heading2"],
+        )
+    )
+
+    elements.append(
+        Spacer(
+            1,
+            0.2 * inch,
+        )
+    )
+
+    # Requirement-wise analysis
+    for index, result in enumerate(
+        compliance_results,
+        start=1,
+    ):
+
+        elements.append(
+            Paragraph(
+                f"<b>Requirement {index}</b>",
+                styles["Heading3"],
+            )
+        )
+
+        elements.append(
+            Paragraph(
+                (
+                    "<b>Tender Requirement:</b> "
+                    f"{result.requirement.requirement_text}"
+                ),
+                styles["Normal"],
+            )
+        )
+
+        elements.append(
+            Paragraph(
+                (
+                    "<b>Status:</b> "
+                    f"{result.get_status_display()}"
+                ),
+                styles["Normal"],
+            )
+        )
+
+        elements.append(
+            Paragraph(
+                (
+                    "<b>Confidence Score:</b> "
+                    f"{result.confidence_score}%"
+                ),
+                styles["Normal"],
+            )
+        )
+
+        elements.append(
+            Paragraph(
+                (
+                    "<b>Analysis:</b> "
+                    f"{result.explanation}"
+                ),
+                styles["Normal"],
+            )
+        )
+
+        elements.append(
+            Spacer(
+                1,
+                0.25 * inch,
+            )
+        )
+
+    # Build PDF
+    doc.build(
+        elements
+    )
+
+    return response
