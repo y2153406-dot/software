@@ -4,201 +4,868 @@
 Manage Requirements | Tender Compliance AI
 {% endblock %}
 
-
 {% block content %}
+
+<style>
+
+    /* ================================
+       PAGE HEADER
+    ================================= */
+
+    .requirements-hero {
+        background: linear-gradient(
+            135deg,
+            #18233f,
+            #263d78
+        );
+        border-radius: 22px;
+        padding: 28px 32px;
+        color: white;
+        box-shadow: 0 14px 35px rgba(30, 48, 90, 0.18);
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .requirements-hero::after {
+        content: "";
+        position: absolute;
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+        background: rgba(100, 120, 255, 0.18);
+        right: -55px;
+        bottom: -90px;
+    }
+
+    .requirements-hero::before {
+        content: "";
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(120, 100, 255, 0.12);
+        right: 120px;
+        top: -75px;
+    }
+
+
+    /* ================================
+       HEADER CONTENT
+    ================================= */
+
+    .requirements-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(255,255,255,0.12);
+
+        font-size: 24px;
+
+        margin-bottom: 14px;
+    }
+
+    .requirements-hero h2 {
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .requirements-hero p {
+        color: rgba(255,255,255,0.75);
+        margin-bottom: 0;
+    }
+
+
+    /* ================================
+       BUTTONS
+    ================================= */
+
+    .btn-add-requirement {
+
+        background: linear-gradient(
+            135deg,
+            #3b82f6,
+            #2563eb
+        );
+
+        border: none;
+
+        border-radius: 10px;
+
+        padding: 11px 18px;
+
+        font-weight: 600;
+
+        color: white;
+
+        box-shadow:
+            0 7px 16px
+            rgba(37,99,235,0.28);
+
+        transition: all 0.2s ease;
+
+        text-decoration: none;
+    }
+
+    .btn-add-requirement:hover {
+
+        transform: translateY(-2px);
+
+        color: white;
+
+        box-shadow:
+            0 10px 22px
+            rgba(37,99,235,0.35);
+
+    }
+
+
+    /* ================================
+       TOP TOOLBAR
+    ================================= */
+
+    .requirements-toolbar {
+
+        background: white;
+
+        border-radius: 18px;
+
+        padding: 18px 22px;
+
+        margin-bottom: 22px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(15,23,42,0.06);
+
+        border:
+            1px solid
+            rgba(226,232,240,0.9);
+
+    }
+
+
+    .project-label {
+
+        font-size: 12px;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.7px;
+
+        color: #94a3b8;
+
+        font-weight: 700;
+
+        margin-bottom: 4px;
+
+    }
+
+
+    .project-name {
+
+        font-size: 16px;
+
+        font-weight: 700;
+
+        color: #1e293b;
+
+    }
+
+
+    .requirements-count {
+
+        background: #eff6ff;
+
+        color: #2563eb;
+
+        border-radius: 10px;
+
+        padding: 8px 13px;
+
+        font-weight: 700;
+
+        font-size: 14px;
+
+    }
+
+
+    /* ================================
+       REQUIREMENT CARD
+    ================================= */
+
+    .requirement-card {
+
+        background: white;
+
+        border-radius: 18px;
+
+        border:
+            1px solid
+            #e7edf5;
+
+        padding: 22px;
+
+        margin-bottom: 16px;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+
+        box-shadow:
+            0 4px 15px
+            rgba(15,23,42,0.04);
+
+    }
+
+
+    .requirement-card:hover {
+
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 12px 30px
+            rgba(15,23,42,0.09);
+
+    }
+
+
+    /* ================================
+       REQUIREMENT NUMBER
+    ================================= */
+
+    .requirement-number {
+
+        width: 42px;
+
+        height: 42px;
+
+        border-radius: 12px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background:
+            linear-gradient(
+                135deg,
+                #eef2ff,
+                #e0e7ff
+            );
+
+        color: #3b5ccc;
+
+        font-weight: 700;
+
+        font-size: 15px;
+
+        flex-shrink: 0;
+
+    }
+
+
+    /* ================================
+       BADGES
+    ================================= */
+
+    .badge-category {
+
+        background: #f1f5f9;
+
+        color: #475569;
+
+        padding: 6px 10px;
+
+        border-radius: 7px;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+    }
+
+
+    .badge-mandatory {
+
+        background: #fee2e2;
+
+        color: #dc2626;
+
+        padding: 6px 10px;
+
+        border-radius: 7px;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+    }
+
+
+    .badge-optional {
+
+        background: #e0f2fe;
+
+        color: #0284c7;
+
+        padding: 6px 10px;
+
+        border-radius: 7px;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+    }
+
+
+    /* ================================
+       REQUIREMENT TEXT
+    ================================= */
+
+    .requirement-text {
+
+        color: #475569;
+
+        line-height: 1.7;
+
+        font-size: 14px;
+
+        margin-top: 18px;
+
+        padding-top: 16px;
+
+        border-top:
+            1px solid
+            #eef2f7;
+
+    }
+
+
+    /* ================================
+       ACTION BUTTONS
+    ================================= */
+
+    .btn-action {
+
+        border-radius: 9px;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+        padding: 7px 12px;
+
+        transition: all 0.2s ease;
+
+    }
+
+
+    .btn-edit {
+
+        color: #2563eb;
+
+        border-color: #bfdbfe;
+
+        background: #eff6ff;
+
+    }
+
+
+    .btn-edit:hover {
+
+        background: #2563eb;
+
+        color: white;
+
+        border-color: #2563eb;
+
+    }
+
+
+    .btn-delete {
+
+        color: #dc2626;
+
+        border-color: #fecaca;
+
+        background: #fff5f5;
+
+    }
+
+
+    .btn-delete:hover {
+
+        background: #dc2626;
+
+        color: white;
+
+        border-color: #dc2626;
+
+    }
+
+
+    /* ================================
+       EMPTY STATE
+    ================================= */
+
+    .empty-state {
+
+        background: white;
+
+        border-radius: 20px;
+
+        padding: 65px 25px;
+
+        text-align: center;
+
+        border:
+            1px dashed
+            #cbd5e1;
+
+    }
+
+
+    .empty-icon {
+
+        width: 75px;
+
+        height: 75px;
+
+        border-radius: 20px;
+
+        background: #f1f5f9;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 34px;
+
+        margin:
+            0 auto 20px;
+
+    }
+
+
+    /* ================================
+       RESPONSIVE
+    ================================= */
+
+    @media (max-width: 768px) {
+
+        .requirements-hero {
+
+            padding: 24px;
+
+        }
+
+
+        .requirement-card {
+
+            padding: 18px;
+
+        }
+
+
+        .requirements-actions {
+
+            margin-top: 15px;
+
+        }
+
+    }
+
+</style>
+
+
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-10">
+    <div class="col-lg-11 col-xl-10">
 
 
-        <!-- HEADER -->
+        <!-- ================================
+             HERO HEADER
+        ================================= -->
 
-        <div
-            class="d-flex justify-content-between align-items-center mb-4"
-        >
+        <div class="requirements-hero">
 
-            <div>
+            <div class="requirements-hero-content">
 
-                <h2 class="fw-bold mb-1">
-                    📋 Manage Tender Requirements
-                </h2>
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        flex-wrap
+                        gap-3
+                    "
+                >
 
+                    <div>
 
-                <p class="text-muted mb-0">
-
-                    Project:
-                    <strong>{{ project.name }}</strong>
-
-                </p>
-
-            </div>
-
-
-            <a
-                href="{% url 'requirement_create' project.id %}"
-                class="btn btn-primary"
-            >
-                ➕ Add Requirement
-            </a>
-
-        </div>
+                        <a
+                            href="{% url 'project_solution' project.id %}"
+                            class="text-white-50 text-decoration-none small"
+                        >
+                            ← Back to Project Solution
+                        </a>
 
 
-        <!-- BACK BUTTON -->
+                        <div class="page-icon mt-3">
 
-        <div class="mb-4">
+                            📋
 
-            <a
-                href="{% url 'project_solution' project.id %}"
-                class="text-decoration-none"
-            >
-                ← Back to Project Solution
-            </a>
-
-        </div>
+                        </div>
 
 
-        <!-- REQUIREMENTS -->
+                        <h2>
 
-        <div class="card border-0 shadow-sm">
+                            Manage Requirements
 
-            <div class="card-body p-4">
+                        </h2>
 
 
-                {% if requirements %}
+                        <p>
 
-                    <div class="mb-3 text-muted">
+                            Review, organize and manage all tender requirements.
 
-                        Total Requirements:
-                        <strong>{{ requirements.count }}</strong>
+                        </p>
 
                     </div>
 
 
-                    {% for requirement in requirements %}
+                    <a
+                        href="{% url 'requirement_create' project.id %}"
+                        class="btn-add-requirement"
+                    >
+
+                        ➕ Add Requirement
+
+                    </a>
 
 
-                        <div class="card border mb-3">
+                </div>
 
-                            <div class="card-body">
+            </div>
 
-
-                                <!-- HEADER -->
-
-                                <div
-                                    class="d-flex justify-content-between align-items-start mb-3"
-                                >
-
-                                    <div>
-
-                                        <h6 class="fw-bold mb-1">
-
-                                            Requirement {{ forloop.counter }}
-
-                                        </h6>
+        </div>
 
 
-                                        <!-- CATEGORY -->
 
-                                        <span class="badge bg-secondary">
+        <!-- ================================
+             PROJECT TOOLBAR
+        ================================= -->
+
+        <div class="requirements-toolbar">
+
+            <div
+                class="
+                    d-flex
+                    justify-content-between
+                    align-items-center
+                    flex-wrap
+                    gap-3
+                "
+            >
+
+
+                <div>
+
+                    <div class="project-label">
+
+                        Current Project
+
+                    </div>
+
+
+                    <div class="project-name">
+
+                        📁 {{ project.name }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="requirements-count">
+
+                    📋 {{ requirements.count }} Requirements
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================================
+             REQUIREMENTS LIST
+        ================================= -->
+
+        {% if requirements %}
+
+
+            <div>
+
+
+                {% for requirement in requirements %}
+
+
+                    <div class="requirement-card">
+
+
+                        <!-- HEADER -->
+
+                        <div
+                            class="
+                                d-flex
+                                justify-content-between
+                                align-items-start
+                                flex-wrap
+                                gap-3
+                            "
+                        >
+
+
+                            <div
+                                class="
+                                    d-flex
+                                    align-items-start
+                                    gap-3
+                                "
+                            >
+
+
+                                <!-- NUMBER -->
+
+                                <div class="requirement-number">
+
+                                    {{ forloop.counter }}
+
+                                </div>
+
+
+
+                                <!-- INFO -->
+
+                                <div>
+
+
+                                    <h6
+                                        class="
+                                            fw-bold
+                                            mb-2
+                                        "
+                                    >
+
+                                        Requirement
+                                        {{ forloop.counter }}
+
+                                    </h6>
+
+
+
+                                    <!-- BADGES -->
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            flex-wrap
+                                            gap-2
+                                        "
+                                    >
+
+
+                                        <span class="badge-category">
 
                                             {{ requirement.get_category_display }}
 
                                         </span>
 
 
-                                        <!-- MANDATORY -->
 
                                         {% if requirement.is_mandatory %}
 
-                                            <span class="badge bg-danger">
 
-                                                Mandatory
+                                            <span class="badge-mandatory">
+
+                                                🔴 Mandatory
 
                                             </span>
+
 
                                         {% else %}
 
-                                            <span
-                                                class="badge bg-info text-dark"
-                                            >
 
-                                                Optional
+                                            <span class="badge-optional">
+
+                                                🔵 Optional
 
                                             </span>
 
+
                                         {% endif %}
 
-                                    </div>
-
-
-                                    <!-- ACTIONS -->
-
-                                    <div>
-
-                                        <a
-                                            href="{% url 'requirement_edit' requirement.id %}"
-                                            class="btn btn-sm btn-outline-primary"
-                                        >
-                                            ✏️ Edit
-                                        </a>
-
-
-                                        <a
-                                            href="{% url 'requirement_delete' requirement.id %}"
-                                            class="btn btn-sm btn-outline-danger"
-                                        >
-                                            🗑️ Delete
-                                        </a>
 
                                     </div>
+
 
                                 </div>
 
 
-                                <!-- REQUIREMENT TEXT -->
+                            </div>
 
-                                <p class="mb-0 text-muted">
 
-                                    {{ requirement.requirement_text }}
 
-                                </p>
+                            <!-- ACTIONS -->
+
+                            <div
+                                class="
+                                    d-flex
+                                    gap-2
+                                    requirements-actions
+                                "
+                            >
+
+
+                                <a
+                                    href="{% url 'requirement_edit' requirement.id %}"
+                                    class="
+                                        btn
+                                        btn-action
+                                        btn-edit
+                                    "
+                                >
+
+                                    ✏️ Edit
+
+                                </a>
+
+
+
+                                <a
+                                    href="{% url 'requirement_delete' requirement.id %}"
+                                    class="
+                                        btn
+                                        btn-action
+                                        btn-delete
+                                    "
+                                >
+
+                                    🗑️ Delete
+
+                                </a>
 
 
                             </div>
 
+
                         </div>
 
 
-                    {% endfor %}
 
+                        <!-- REQUIREMENT TEXT -->
 
-                {% else %}
+                        <div class="requirement-text">
 
+                            {{ requirement.requirement_text }}
 
-                    <div class="alert alert-warning mb-0">
+                        </div>
 
-                        No requirements found yet.
-
-                        <br><br>
-
-                        You can manually add a requirement using
-                        the button above.
 
                     </div>
 
 
-                {% endif %}
+                {% endfor %}
 
 
             </div>
 
-        </div>
+
+
+        {% else %}
+
+
+            <!-- ================================
+                 EMPTY STATE
+            ================================= -->
+
+            <div class="empty-state">
+
+
+                <div class="empty-icon">
+
+                    📋
+
+                </div>
+
+
+                <h4
+                    class="
+                        fw-bold
+                        mb-2
+                    "
+                >
+
+                    No Requirements Yet
+
+                </h4>
+
+
+                <p
+                    class="
+                        text-muted
+                        mb-4
+                    "
+                >
+
+                    No tender requirements have been added to this project yet.
+
+                    <br>
+
+                    Add requirements manually or extract them from
+                    the uploaded tender document.
+
+                </p>
+
+
+                <a
+                    href="{% url 'requirement_create' project.id %}"
+                    class="btn-add-requirement"
+                >
+
+                    ➕ Add First Requirement
+
+                </a>
+
+
+            </div>
+
+
+        {% endif %}
 
 
     </div>
 
 </div>
+
 
 {% endblock %}

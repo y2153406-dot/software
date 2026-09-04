@@ -8,174 +8,1217 @@ Projects | Tender Compliance AI
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<style>
 
-    <div>
+    /* =====================================
+       PROJECT LIST PAGE
+    ===================================== */
 
-        <h1 class="h2 fw-bold mb-1">
-            Tender Projects
-        </h1>
-
-        <p class="text-muted mb-0">
-            Manage and evaluate your tender compliance projects.
-        </p>
-
-    </div>
+    .projects-page {
+        padding-bottom: 20px;
+    }
 
 
-    <a
-        href="{% url 'project_create' %}"
-        class="btn btn-primary"
-    >
-        + Create Project
-    </a>
+    /* =====================================
+       HERO
+    ===================================== */
 
-</div>
+    .projects-hero {
+        position: relative;
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #172554 50%,
+                #1e3a8a 100%
+            );
+
+        border-radius: 22px;
+
+        padding: 34px;
+
+        margin-bottom: 32px;
+
+        color: #ffffff;
+
+        box-shadow:
+            0 16px 35px
+            rgba(15, 23, 42, 0.18);
+    }
 
 
-{% if projects %}
+    .projects-hero::before {
+        content: "";
 
-    <div class="row g-4">
+        position: absolute;
 
-        {% for project in projects %}
+        width: 280px;
 
-            <div class="col-md-6 col-lg-4">
+        height: 280px;
+
+        border-radius: 50%;
+
+        top: -130px;
+
+        right: -80px;
+
+        background:
+            rgba(96, 165, 250, 0.16);
+    }
 
 
-                <!-- PROJECT CARD -->
+    .projects-hero::after {
+        content: "";
 
-                <div
-                    class="card h-100 shadow-sm border-0"
-                    style="transition: 0.2s;"
-                >
+        position: absolute;
+
+        width: 180px;
+
+        height: 180px;
+
+        border-radius: 50%;
+
+        bottom: -100px;
+
+        right: 220px;
+
+        background:
+            rgba(139, 92, 246, 0.14);
+    }
 
 
-                    <!-- CLICKABLE PROJECT CONTENT -->
+    .hero-content {
+        position: relative;
 
-                    <a
-                        href="{% url 'project_dashboard' project.id %}"
-                        class="text-decoration-none text-dark d-block"
+        z-index: 2;
+    }
+
+
+    .hero-icon {
+        width: 58px;
+
+        height: 58px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 16px;
+
+        font-size: 28px;
+
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.12);
+    }
+
+
+    .projects-title {
+        font-weight: 800;
+
+        letter-spacing: -0.8px;
+
+        margin-bottom: 6px;
+    }
+
+
+    .projects-subtitle {
+        color:
+            rgba(255, 255, 255, 0.72);
+
+        margin-bottom: 0;
+
+        font-size: 15px;
+    }
+
+
+    .project-count {
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        margin-top: 18px;
+
+        padding:
+            8px
+            14px;
+
+        border-radius: 50px;
+
+        background:
+            rgba(255, 255, 255, 0.10);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.10);
+
+        font-size: 13px;
+
+        font-weight: 600;
+    }
+
+
+    .create-project-btn {
+        position: relative;
+
+        z-index: 3;
+
+        border: none;
+
+        border-radius: 11px;
+
+        padding:
+            12px
+            22px;
+
+        font-weight: 700;
+
+        background:
+            linear-gradient(
+                135deg,
+                #3b82f6,
+                #2563eb
+            );
+
+        box-shadow:
+            0 10px 25px
+            rgba(37, 99, 235, 0.35);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .create-project-btn:hover {
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 15px 30px
+            rgba(37, 99, 235, 0.45);
+    }
+
+
+    /* =====================================
+       SECTION HEADER
+    ===================================== */
+
+    .projects-section-header {
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        margin-bottom: 20px;
+    }
+
+
+    .projects-section-title {
+        font-size: 18px;
+
+        font-weight: 750;
+
+        color: #1e293b;
+
+        margin: 0;
+    }
+
+
+    .projects-section-subtitle {
+        font-size: 13px;
+
+        color: #94a3b8;
+
+        margin: 4px 0 0;
+    }
+
+
+    /* =====================================
+       PROJECT CARD
+    ===================================== */
+
+    .project-card {
+        height: 100%;
+
+        border: none;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 7px 22px
+            rgba(15, 23, 42, 0.08);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .project-card:hover {
+        transform:
+            translateY(-7px);
+
+        box-shadow:
+            0 20px 40px
+            rgba(15, 23, 42, 0.14);
+    }
+
+
+    .project-card-accent {
+        height: 4px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #2563eb,
+                #7c3aed,
+                #06b6d4
+            );
+    }
+
+
+    .project-link {
+        text-decoration: none;
+
+        color: inherit;
+
+        display: block;
+    }
+
+
+    .project-card-body {
+        padding: 24px;
+    }
+
+
+    .project-icon {
+        width: 48px;
+
+        height: 48px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 15px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #dbeafe,
+                #e0e7ff
+            );
+
+        font-size: 22px;
+
+        margin-bottom: 18px;
+    }
+
+
+    .project-name {
+        font-size: 18px;
+
+        font-weight: 750;
+
+        color: #1e293b;
+
+        margin-bottom: 8px;
+    }
+
+
+    .organization-name {
+        display: flex;
+
+        align-items: center;
+
+        gap: 6px;
+
+        font-size: 13px;
+
+        color: #64748b;
+
+        margin-bottom: 17px;
+    }
+
+
+    .project-description {
+        color: #64748b;
+
+        font-size: 14px;
+
+        line-height: 1.6;
+
+        margin-bottom: 22px;
+
+        min-height: 66px;
+
+        display:
+            -webkit-box;
+
+        -webkit-line-clamp: 3;
+
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+    }
+
+
+    /* =====================================
+       PROJECT PROGRESS
+    ===================================== */
+
+    .progress-header {
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        margin-bottom: 8px;
+    }
+
+
+    .progress-title {
+        font-size: 12px;
+
+        font-weight: 700;
+
+        color: #475569;
+    }
+
+
+    .progress-text {
+        font-size: 12px;
+
+        font-weight: 700;
+
+        color: #2563eb;
+    }
+
+
+    .project-progress {
+        height: 7px;
+
+        background: #e2e8f0;
+
+        border-radius: 50px;
+
+        overflow: hidden;
+    }
+
+
+    .project-progress-bar {
+        height: 100%;
+
+        border-radius: 50px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #2563eb,
+                #06b6d4
+            );
+    }
+
+
+    .workflow-status {
+        display: flex;
+
+        flex-wrap: wrap;
+
+        gap: 7px;
+
+        margin-top: 14px;
+    }
+
+
+    .workflow-badge {
+        padding:
+            5px
+            9px;
+
+        border-radius: 50px;
+
+        font-size: 10px;
+
+        font-weight: 700;
+
+        background: #f1f5f9;
+
+        color: #64748b;
+    }
+
+
+    .workflow-badge.active {
+        background: #dcfce7;
+
+        color: #15803d;
+    }
+
+
+    /* =====================================
+       FOOTER
+    ===================================== */
+
+    .project-card-footer {
+        padding:
+            15px
+            24px;
+
+        border-top:
+            1px solid #eef2f7;
+
+        background: #fafcff;
+    }
+
+
+    .created-date {
+        font-size: 12px;
+
+        color: #94a3b8;
+    }
+
+
+    .status-uploaded {
+        display: inline-flex;
+
+        align-items: center;
+
+        padding:
+            6px
+            11px;
+
+        border-radius: 50px;
+
+        background: #dcfce7;
+
+        color: #15803d;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        text-decoration: none;
+    }
+
+
+    .upload-button {
+        border-radius: 8px;
+
+        font-size: 12px;
+
+        font-weight: 700;
+
+        padding:
+            6px
+            12px;
+    }
+
+
+    /* =====================================
+       EMPTY STATE
+    ===================================== */
+
+    .empty-state {
+        border: none;
+
+        border-radius: 22px;
+
+        box-shadow:
+            0 8px 25px
+            rgba(15, 23, 42, 0.08);
+    }
+
+
+    .empty-icon {
+        width: 80px;
+
+        height: 80px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        margin:
+            0 auto 22px;
+
+        border-radius: 22px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #dbeafe,
+                #ede9fe
+            );
+
+        font-size: 36px;
+    }
+
+
+    /* =====================================
+       RESPONSIVE
+    ===================================== */
+
+    @media (max-width: 768px) {
+
+        .projects-hero {
+            padding: 25px;
+        }
+
+
+        .hero-actions {
+            width: 100%;
+        }
+
+
+        .create-project-btn {
+            width: 100%;
+        }
+
+
+        .projects-section-header {
+            align-items: flex-start;
+
+            flex-direction: column;
+        }
+
+    }
+
+</style>
+
+
+<div class="projects-page">
+
+
+    <!-- =================================
+         HERO
+    ================================== -->
+
+    <div class="projects-hero">
+
+
+        <div class="hero-content">
+
+
+            <div
+                class="
+                    d-flex
+                    flex-column
+                    flex-md-row
+                    justify-content-between
+                    align-items-md-center
+                    gap-4
+                "
+            >
+
+
+                <div>
+
+
+                    <div
+                        class="
+                            d-flex
+                            align-items-center
+                            gap-3
+                        "
                     >
 
-                        <div class="card-body">
 
-                            <h5 class="card-title fw-bold">
-
-                                {{ project.name }}
-
-                            </h5>
+                        <div class="hero-icon">
+                            📁
+                        </div>
 
 
-                            <p class="text-muted small mb-3">
+                        <div>
 
-                                {{ project.organization|default:"Organization not specified" }}
+                            <h1
+                                class="
+                                    h2
+                                    projects-title
+                                "
+                            >
 
-                            </p>
+                                Tender Projects
+
+                            </h1>
 
 
-                            <p class="card-text text-dark mb-0">
+                            <p
+                                class="
+                                    projects-subtitle
+                                "
+                            >
 
-                                {{ project.description|default:"No description provided." }}
+                                Manage, analyze, and evaluate
+                                your tender compliance projects
+                                with AI.
 
                             </p>
 
                         </div>
+
+
+                    </div>
+
+
+                    {% if projects %}
+
+                        <div
+                            class="
+                                project-count
+                            "
+                        >
+
+                            📊
+
+                            {{ projects|length }}
+
+                            Project{{ projects|length|pluralize }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <div
+                    class="
+                        hero-actions
+                    "
+                >
+
+
+                    <a
+                        href="{% url 'project_create' %}"
+                        class="
+                            btn
+                            btn-primary
+                            create-project-btn
+                        "
+                    >
+
+                        + Create Project
 
                     </a>
 
 
-                    <!-- CARD FOOTER -->
+                </div>
 
-                    <div class="card-footer bg-white border-0">
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    {% if projects %}
+
+
+        <!-- =============================
+             PROJECT SECTION HEADER
+        ============================== -->
+
+        <div
+            class="
+                projects-section-header
+            "
+        >
+
+
+            <div>
+
+                <h2
+                    class="
+                        projects-section-title
+                    "
+                >
+
+                    Your Projects
+
+                </h2>
+
+
+                <p
+                    class="
+                        projects-section-subtitle
+                    "
+                >
+
+                    Click any project to continue
+                    working on its tender analysis.
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =============================
+             PROJECT GRID
+        ============================== -->
+
+        <div class="row g-4">
+
+
+            {% for project in projects %}
+
+
+                <div
+                    class="
+                        col-md-6
+                        col-lg-4
+                    "
+                >
+
+
+                    <div
+                        class="
+                            card
+                            project-card
+                        "
+                    >
+
 
                         <div
-                            class="d-flex justify-content-between align-items-center"
+                            class="
+                                project-card-accent
+                            "
+                        >
+                        </div>
+
+
+                        <!-- PROJECT CONTENT -->
+
+                        <a
+                            href="{% url 'project_dashboard' project.id %}"
+                            class="
+                                project-link
+                            "
                         >
 
-                            <small class="text-muted">
 
-                                Created:
-                                {{ project.created_at|date:"d M Y" }}
+                            <div
+                                class="
+                                    project-card-body
+                                "
+                            >
 
-                            </small>
 
-
-                            {% if project.tender_document %}
-
-                                <a
-                                    href="{% url 'project_dashboard' project.id %}"
-                                    class="badge text-bg-success text-decoration-none"
+                                <div
+                                    class="
+                                        project-icon
+                                    "
                                 >
 
-                                    Tender Uploaded
+                                    📂
 
-                                </a>
+                                </div>
 
-                            {% else %}
 
-                                <a
-                                    href="{% url 'tender_document_upload' project.id %}"
-                                    class="btn btn-sm btn-outline-primary"
+                                <h5
+                                    class="
+                                        project-name
+                                    "
                                 >
 
-                                    Upload Tender
+                                    {{ project.name }}
 
-                                </a>
+                                </h5>
 
-                            {% endif %}
+
+                                <div
+                                    class="
+                                        organization-name
+                                    "
+                                >
+
+                                    🏢
+
+                                    {{ project.organization|default:"Organization not specified" }}
+
+                                </div>
+
+
+                                <p
+                                    class="
+                                        project-description
+                                    "
+                                >
+
+                                    {{ project.description|default:"No description provided." }}
+
+                                </p>
+
+
+                                <!-- PROJECT PROGRESS -->
+
+                                <div
+                                    class="
+                                        progress-header
+                                    "
+                                >
+
+
+                                    <span
+                                        class="
+                                            progress-title
+                                        "
+                                    >
+
+                                        Project Progress
+
+                                    </span>
+
+
+                                    {% if project.tender_document %}
+
+                                        <span
+                                            class="
+                                                progress-text
+                                            "
+                                        >
+
+                                            Started
+
+                                        </span>
+
+
+                                    {% else %}
+
+                                        <span
+                                            class="
+                                                progress-text
+                                            "
+                                        >
+
+                                            New
+
+                                        </span>
+
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        project-progress
+                                    "
+                                >
+
+
+                                    {% if project.tender_document %}
+
+
+                                        <div
+                                            class="
+                                                project-progress-bar
+                                            "
+                                            style="
+                                                width: 25%;
+                                            "
+                                        >
+                                        </div>
+
+
+                                    {% else %}
+
+
+                                        <div
+                                            class="
+                                                project-progress-bar
+                                            "
+                                            style="
+                                                width: 5%;
+                                            "
+                                        >
+                                        </div>
+
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                                <!-- WORKFLOW STATUS -->
+
+                                <div
+                                    class="
+                                        workflow-status
+                                    "
+                                >
+
+
+                                    {% if project.tender_document %}
+
+                                        <span
+                                            class="
+                                                workflow-badge
+                                                active
+                                            "
+                                        >
+
+                                            ✓ Tender
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="
+                                                workflow-badge
+                                            "
+                                        >
+
+                                            Tender
+
+                                        </span>
+
+                                    {% endif %}
+
+
+                                    <span
+                                        class="
+                                            workflow-badge
+                                        "
+                                    >
+
+                                        Requirements
+
+                                    </span>
+
+
+                                    <span
+                                        class="
+                                            workflow-badge
+                                        "
+                                    >
+
+                                        Solution
+
+                                    </span>
+
+
+                                    <span
+                                        class="
+                                            workflow-badge
+                                        "
+                                    >
+
+                                        Analysis
+
+                                    </span>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </a>
+
+
+                        <!-- PROJECT FOOTER -->
+
+                        <div
+                            class="
+                                project-card-footer
+                            "
+                        >
+
+
+                            <div
+                                class="
+                                    d-flex
+                                    justify-content-between
+                                    align-items-center
+                                "
+                            >
+
+
+                                <div
+                                    class="
+                                        created-date
+                                    "
+                                >
+
+                                    📅
+
+                                    {{ project.created_at|date:"d M Y" }}
+
+                                </div>
+
+
+                                {% if project.tender_document %}
+
+
+                                    <a
+                                        href="{% url 'project_dashboard' project.id %}"
+                                        class="
+                                            status-uploaded
+                                        "
+                                    >
+
+                                        ✓ Tender Uploaded
+
+                                    </a>
+
+
+                                {% else %}
+
+
+                                    <a
+                                        href="{% url 'tender_document_upload' project.id %}"
+                                        class="
+                                            btn
+                                            btn-sm
+                                            btn-outline-primary
+                                            upload-button
+                                        "
+                                    >
+
+                                        Upload Tender →
+
+                                    </a>
+
+
+                                {% endif %}
+
+
+                            </div>
+
 
                         </div>
+
 
                     </div>
 
 
                 </div>
 
-            </div>
 
-        {% endfor %}
+            {% endfor %}
 
-    </div>
-
-
-{% else %}
-
-
-    <!-- EMPTY STATE -->
-
-    <div class="card border-0 shadow-sm">
-
-        <div class="card-body text-center py-5">
-
-            <h4 class="fw-bold">
-
-                No Projects Yet
-
-            </h4>
-
-
-            <p class="text-muted">
-
-                Create your first tender compliance evaluation project.
-
-            </p>
-
-
-            <a
-                href="{% url 'project_create' %}"
-                class="btn btn-primary"
-            >
-
-                Create First Project
-
-            </a>
 
         </div>
 
-    </div>
+
+    {% else %}
 
 
-{% endif %}
+        <!-- =============================
+             EMPTY STATE
+        ============================== -->
+
+        <div
+            class="
+                card
+                empty-state
+            "
+        >
+
+
+            <div
+                class="
+                    card-body
+                    text-center
+                    py-5
+                "
+            >
+
+
+                <div
+                    class="
+                        empty-icon
+                    "
+                >
+
+                    📂
+
+                </div>
+
+
+                <h4
+                    class="
+                        fw-bold
+                        mb-3
+                    "
+                >
+
+                    No Projects Yet
+
+                </h4>
+
+
+                <p
+                    class="
+                        text-muted
+                        mb-4
+                    "
+                >
+
+                    Create your first tender compliance
+                    project and start analyzing tender
+                    requirements with AI.
+
+                </p>
+
+
+                <a
+                    href="{% url 'project_create' %}"
+                    class="
+                        btn
+                        btn-primary
+                        create-project-btn
+                    "
+                >
+
+                    🚀 Create First Project
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
 
 
 {% endblock %}

@@ -8,101 +8,709 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<style>
 
-    <div class="col-lg-8">
+    /* =========================
+       CREATE PROJECT PAGE
+    ========================= */
 
-        <div class="card border-0 shadow-sm">
+    .create-project-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
 
-            <div class="card-body p-4 p-md-5">
 
-                <div class="mb-4">
+    /* =========================
+       HERO HEADER
+    ========================= */
 
-                    <h2 class="fw-bold">
+    .create-project-hero {
+        position: relative;
+        overflow: hidden;
+
+        padding: 2.2rem;
+
+        border-radius: 22px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #172033,
+                #263b78
+            );
+
+        color: white;
+
+        box-shadow:
+            0 18px 45px
+            rgba(20, 35, 70, 0.18);
+
+        margin-bottom: 1.5rem;
+    }
+
+
+    .create-project-hero::before {
+        content: "";
+
+        position: absolute;
+
+        width: 220px;
+        height: 220px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(90, 120, 255, 0.18);
+
+        right: -70px;
+        top: -100px;
+    }
+
+
+    .create-project-hero::after {
+        content: "";
+
+        position: absolute;
+
+        width: 140px;
+        height: 140px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(128, 94, 255, 0.18);
+
+        right: 100px;
+        bottom: -95px;
+    }
+
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    .back-link {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 6px;
+
+        color: rgba(255, 255, 255, 0.72);
+
+        font-size: 0.85rem;
+
+        text-decoration: none;
+
+        margin-bottom: 1rem;
+
+        transition: 0.2s;
+    }
+
+
+    .back-link:hover {
+
+        color: white;
+
+    }
+
+
+    .hero-title {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 14px;
+
+        margin-bottom: 0.5rem;
+    }
+
+
+    .hero-icon {
+
+        width: 54px;
+        height: 54px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 16px;
+
+        font-size: 1.6rem;
+
+        background:
+            rgba(255, 255, 255, 0.12);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.14);
+    }
+
+
+    .hero-title h1 {
+
+        margin: 0;
+
+        font-size: 1.8rem;
+
+        font-weight: 700;
+    }
+
+
+    .hero-subtitle {
+
+        margin: 0;
+
+        color:
+            rgba(255, 255, 255, 0.7);
+
+        font-size: 0.95rem;
+    }
+
+
+    /* =========================
+       FORM CARD
+    ========================= */
+
+    .project-form-card {
+
+        border: 1px solid
+            rgba(0, 0, 0, 0.06);
+
+        border-radius: 20px;
+
+        background: white;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 12px 35px
+            rgba(20, 30, 60, 0.08);
+    }
+
+
+    .form-card-header {
+
+        padding:
+            1.5rem
+            1.8rem
+            1.2rem;
+
+        border-bottom:
+            1px solid
+            #eef1f6;
+    }
+
+
+    .form-card-header h5 {
+
+        margin-bottom: 0.35rem;
+
+        font-weight: 700;
+    }
+
+
+    .form-card-header p {
+
+        margin: 0;
+
+        font-size: 0.9rem;
+
+        color: #6c757d;
+    }
+
+
+    .form-card-body {
+
+        padding: 1.8rem;
+    }
+
+
+    /* =========================
+       FORM LABELS
+    ========================= */
+
+    .project-form-card
+    .form-label {
+
+        font-size: 0.9rem;
+
+        font-weight: 600;
+
+        color: #344054;
+
+        margin-bottom: 0.5rem;
+    }
+
+
+    /* =========================
+       DJANGO INPUTS
+    ========================= */
+
+    .project-form-card
+    input,
+
+    .project-form-card
+    textarea,
+
+    .project-form-card
+    select {
+
+        width: 100%;
+
+        border-radius: 10px;
+
+        border:
+            1px solid
+            #d9dee8;
+
+        padding:
+            0.7rem
+            0.85rem;
+
+        font-size: 0.95rem;
+
+        transition:
+            border 0.2s,
+            box-shadow 0.2s;
+
+        outline: none;
+    }
+
+
+    .project-form-card
+    textarea {
+
+        min-height: 130px;
+
+        resize: vertical;
+    }
+
+
+    .project-form-card
+    input:focus,
+
+    .project-form-card
+    textarea:focus,
+
+    .project-form-card
+    select:focus {
+
+        border-color:
+            #3568d4;
+
+        box-shadow:
+            0 0 0 4px
+            rgba(53, 104, 212, 0.12);
+    }
+
+
+    /* =========================
+       HELPER TEXT
+    ========================= */
+
+    .field-help {
+
+        font-size: 0.78rem;
+
+        color: #98a2b3;
+
+        margin-top: 0.4rem;
+    }
+
+
+    /* =========================
+       ACTION SECTION
+    ========================= */
+
+    .form-actions {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 1rem;
+
+        margin-top: 2rem;
+
+        padding-top: 1.5rem;
+
+        border-top:
+            1px solid
+            #eef1f6;
+    }
+
+
+    .btn-cancel {
+
+        border-radius: 10px;
+
+        padding:
+            0.65rem
+            1.1rem;
+
+        font-weight: 500;
+    }
+
+
+    .btn-create {
+
+        border: none;
+
+        border-radius: 10px;
+
+        padding:
+            0.7rem
+            1.4rem;
+
+        font-weight: 600;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2f66d2,
+                #3157b8
+            );
+
+        box-shadow:
+            0 8px 20px
+            rgba(47, 102, 210, 0.25);
+
+        transition:
+            transform 0.2s,
+            box-shadow 0.2s;
+    }
+
+
+    .btn-create:hover {
+
+        color: white;
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 12px 25px
+            rgba(47, 102, 210, 0.32);
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 576px) {
+
+        .create-project-hero {
+
+            padding: 1.5rem;
+        }
+
+
+        .hero-title h1 {
+
+            font-size: 1.4rem;
+        }
+
+
+        .form-card-body {
+
+            padding: 1.3rem;
+        }
+
+
+        .form-actions {
+
+            flex-direction: column-reverse;
+
+            align-items: stretch;
+        }
+
+
+        .form-actions
+        .btn {
+
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<div class="create-project-container">
+
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+
+    <div class="create-project-hero">
+
+        <div class="hero-content">
+
+
+            <a
+                href="{% url 'project_list' %}"
+                class="back-link"
+            >
+                ← Back to Projects
+            </a>
+
+
+            <div class="hero-title">
+
+
+                <div class="hero-icon">
+                    📁
+                </div>
+
+
+                <div>
+
+                    <h1>
                         Create Tender Project
-                    </h2>
+                    </h1>
 
-                    <p class="text-muted mb-0">
-                        Create a project to begin tender compliance evaluation.
+
+                    <p class="hero-subtitle">
+
+                        Start a new AI-powered tender
+                        compliance evaluation project.
+
                     </p>
 
                 </div>
 
 
-                <form method="POST">
-
-                    {% csrf_token %}
-
-
-                    <div class="mb-3">
-
-                        <label
-                            for="{{ form.name.id_for_label }}"
-                            class="form-label fw-semibold"
-                        >
-                            Project Name
-                        </label>
-
-                        {{ form.name }}
-
-                    </div>
-
-
-                    <div class="mb-3">
-
-                        <label
-                            for="{{ form.organization.id_for_label }}"
-                            class="form-label fw-semibold"
-                        >
-                            Organization
-                        </label>
-
-                        {{ form.organization }}
-
-                    </div>
-
-
-                    <div class="mb-4">
-
-                        <label
-                            for="{{ form.description.id_for_label }}"
-                            class="form-label fw-semibold"
-                        >
-                            Description
-                        </label>
-
-                        {{ form.description }}
-
-                    </div>
-
-
-                    <div class="d-flex gap-2">
-
-                        <a
-                            href="{% url 'project_list' %}"
-                            class="btn btn-outline-secondary"
-                        >
-                            Cancel
-                        </a>
-
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary"
-                        >
-                            Create Project
-                        </button>
-
-                    </div>
-
-                </form>
-
             </div>
+
 
         </div>
 
     </div>
 
+
+
+    <!-- =========================
+         FORM CARD
+    ========================== -->
+
+    <div class="project-form-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="form-card-header">
+
+
+            <h5>
+                📋 Project Information
+            </h5>
+
+
+            <p>
+
+                Enter the basic information
+                required to create your project.
+
+            </p>
+
+
+        </div>
+
+
+
+        <!-- FORM BODY -->
+
+        <div class="form-card-body">
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- PROJECT NAME -->
+
+                <div class="mb-4">
+
+
+                    <label
+                        for="{{ form.name.id_for_label }}"
+                        class="form-label"
+                    >
+
+                        Project Name
+
+                    </label>
+
+
+                    {{ form.name }}
+
+
+                    <div class="field-help">
+
+                        Choose a clear and descriptive
+                        name for your tender project.
+
+                    </div>
+
+
+                    {% if form.name.errors %}
+
+                        <div class="text-danger small mt-2">
+
+                            {{ form.name.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+
+                <!-- ORGANIZATION -->
+
+                <div class="mb-4">
+
+
+                    <label
+                        for="{{ form.organization.id_for_label }}"
+                        class="form-label"
+                    >
+
+                        Organization
+
+                    </label>
+
+
+                    {{ form.organization }}
+
+
+                    <div class="field-help">
+
+                        Enter the organization or
+                        client associated with this project.
+
+                    </div>
+
+
+                    {% if form.organization.errors %}
+
+                        <div class="text-danger small mt-2">
+
+                            {{ form.organization.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="mb-2">
+
+
+                    <label
+                        for="{{ form.description.id_for_label }}"
+                        class="form-label"
+                    >
+
+                        Project Description
+
+                    </label>
+
+
+                    {{ form.description }}
+
+
+                    <div class="field-help">
+
+                        Briefly describe the purpose
+                        and scope of this project.
+
+                    </div>
+
+
+                    {% if form.description.errors %}
+
+                        <div class="text-danger small mt-2">
+
+                            {{ form.description.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+
+                    <a
+                        href="{% url 'project_list' %}"
+                        class="
+                            btn
+                            btn-outline-secondary
+                            btn-cancel
+                        "
+                    >
+
+                        ← Cancel
+
+                    </a>
+
+
+
+                    <button
+                        type="submit"
+                        class="
+                            btn
+                            btn-create
+                        "
+                    >
+
+                        🚀 Create Project
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
 </div>
+
 
 {% endblock %}

@@ -4,277 +4,1273 @@
 Upload Tender | Tender Compliance AI
 {% endblock %}
 
+
 {% block content %}
+
+<style>
+
+    /* =================================
+       HERO SECTION
+    ================================= */
+
+    .upload-hero {
+
+        background:
+            linear-gradient(
+                135deg,
+                #18233f,
+                #263d78
+            );
+
+        border-radius: 22px;
+
+        padding: 28px 32px;
+
+        color: white;
+
+        margin-bottom: 28px;
+
+        position: relative;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 14px 35px
+            rgba(30, 48, 90, 0.18);
+
+    }
+
+
+    .upload-hero::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 190px;
+        height: 190px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(91, 120, 255, 0.16);
+
+        right: -55px;
+
+        top: -90px;
+
+    }
+
+
+    .upload-hero::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 130px;
+        height: 130px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(120, 90, 255, 0.14);
+
+        right: 140px;
+
+        bottom: -85px;
+
+    }
+
+
+    .upload-hero-content {
+
+        position: relative;
+
+        z-index: 2;
+
+    }
+
+
+    .back-link {
+
+        color:
+            rgba(255,255,255,0.7);
+
+        text-decoration: none;
+
+        font-size: 13px;
+
+        transition: 0.2s;
+
+    }
+
+
+    .back-link:hover {
+
+        color: white;
+
+    }
+
+
+    .upload-icon {
+
+        width: 56px;
+        height: 56px;
+
+        border-radius: 16px;
+
+        background:
+            rgba(255,255,255,0.12);
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 26px;
+
+        margin-top: 16px;
+
+        margin-bottom: 14px;
+
+    }
+
+
+    .upload-hero h2 {
+
+        font-weight: 700;
+
+        margin-bottom: 6px;
+
+    }
+
+
+    .upload-hero p {
+
+        color:
+            rgba(255,255,255,0.72);
+
+        margin-bottom: 0;
+
+    }
+
+
+    /* =================================
+       MAIN CARD
+    ================================= */
+
+    .upload-card {
+
+        background: white;
+
+        border-radius: 20px;
+
+        padding: 30px;
+
+        border:
+            1px solid
+            rgba(226,232,240,0.9);
+
+        box-shadow:
+            0 10px 30px
+            rgba(15,23,42,0.07);
+
+    }
+
+
+    /* =================================
+       SECTION TITLES
+    ================================= */
+
+    .section-title {
+
+        font-size: 17px;
+
+        font-weight: 700;
+
+        color: #1e293b;
+
+        margin-bottom: 5px;
+
+    }
+
+
+    .section-description {
+
+        color: #64748b;
+
+        font-size: 13px;
+
+        line-height: 1.6;
+
+        margin-bottom: 22px;
+
+    }
+
+
+    /* =================================
+       FORM INPUTS
+    ================================= */
+
+    .upload-card input,
+    .upload-card select,
+    .upload-card textarea {
+
+        width: 100%;
+
+        border:
+            1px solid
+            #dbe3ee;
+
+        border-radius: 10px;
+
+        padding: 11px 13px;
+
+        font-size: 14px;
+
+        color: #334155;
+
+        background: white;
+
+        transition: 0.2s;
+
+    }
+
+
+    .upload-card input:focus,
+    .upload-card select:focus,
+    .upload-card textarea:focus {
+
+        outline: none;
+
+        border-color: #3b82f6;
+
+        box-shadow:
+            0 0 0 3px
+            rgba(59,130,246,0.12);
+
+    }
+
+
+    /* =================================
+       FORM LABEL
+    ================================= */
+
+    .form-label-custom {
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        color: #334155;
+
+        margin-bottom: 8px;
+
+    }
+
+
+    /* =================================
+       FILE UPLOAD AREA
+    ================================= */
+
+    .file-upload-box {
+
+        background: #f8fafc;
+
+        border:
+            2px dashed
+            #cbd5e1;
+
+        border-radius: 14px;
+
+        padding: 24px;
+
+        transition: 0.2s;
+
+    }
+
+
+    .file-upload-box:hover {
+
+        border-color: #3b82f6;
+
+        background: #f8fbff;
+
+    }
+
+
+    .upload-help-text {
+
+        color: #64748b;
+
+        font-size: 12px;
+
+        margin-top: 8px;
+
+    }
+
+
+    /* =================================
+       PRIMARY BUTTON
+    ================================= */
+
+    .btn-primary-custom {
+
+        border: none;
+
+        border-radius: 10px;
+
+        padding: 11px 20px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #3b82f6,
+                #2563eb
+            );
+
+        box-shadow:
+            0 8px 18px
+            rgba(37,99,235,0.25);
+
+        transition: 0.2s;
+
+    }
+
+
+    .btn-primary-custom:hover {
+
+        color: white;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 12px 24px
+            rgba(37,99,235,0.32);
+
+    }
+
+
+    /* =================================
+       SUCCESS CARD
+    ================================= */
+
+    .success-card {
+
+        background:
+            linear-gradient(
+                135deg,
+                #ecfdf5,
+                #f0fdf4
+            );
+
+        border:
+            1px solid
+            #bbf7d0;
+
+        border-radius: 16px;
+
+        padding: 22px;
+
+        margin-bottom: 25px;
+
+    }
+
+
+    .success-icon {
+
+        width: 48px;
+        height: 48px;
+
+        border-radius: 14px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background: #dcfce7;
+
+        font-size: 22px;
+
+        flex-shrink: 0;
+
+    }
+
+
+    .success-title {
+
+        color: #166534;
+
+        font-weight: 700;
+
+        font-size: 16px;
+
+        margin-bottom: 8px;
+
+    }
+
+
+    .document-info {
+
+        background: white;
+
+        border-radius: 10px;
+
+        padding: 14px;
+
+        margin-top: 14px;
+
+        font-size: 13px;
+
+        color: #475569;
+
+    }
+
+
+    /* =================================
+       AI ANALYSIS CARD
+    ================================= */
+
+    .ai-analysis-card {
+
+        background:
+            linear-gradient(
+                135deg,
+                #eff6ff,
+                #f5f3ff
+            );
+
+        border:
+            1px solid
+            #dbeafe;
+
+        border-radius: 18px;
+
+        padding: 24px;
+
+        margin-top: 24px;
+
+    }
+
+
+    .ai-icon {
+
+        width: 50px;
+        height: 50px;
+
+        border-radius: 14px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #dbeafe,
+                #ede9fe
+            );
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 23px;
+
+    }
+
+
+    .ai-title {
+
+        font-size: 17px;
+
+        font-weight: 700;
+
+        color: #1e293b;
+
+        margin-bottom: 5px;
+
+    }
+
+
+    .ai-description {
+
+        color: #64748b;
+
+        font-size: 13px;
+
+        line-height: 1.6;
+
+        margin-bottom: 0;
+
+    }
+
+
+    /* =================================
+       REQUIREMENTS SECTION
+    ================================= */
+
+    .requirements-section {
+
+        margin-top: 30px;
+
+        padding-top: 25px;
+
+        border-top:
+            1px solid
+            #eef2f7;
+
+    }
+
+
+    .requirement-count {
+
+        background: #eff6ff;
+
+        color: #2563eb;
+
+        padding: 6px 10px;
+
+        border-radius: 8px;
+
+        font-size: 12px;
+
+        font-weight: 700;
+
+    }
+
+
+    /* =================================
+       REQUIREMENT ITEM
+    ================================= */
+
+    .requirement-item {
+
+        background: white;
+
+        border:
+            1px solid
+            #e5eaf1;
+
+        border-radius: 14px;
+
+        padding: 17px;
+
+        margin-bottom: 12px;
+
+        transition: 0.2s;
+
+    }
+
+
+    .requirement-item:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px
+            rgba(15,23,42,0.06);
+
+    }
+
+
+    .requirement-number {
+
+        width: 34px;
+        height: 34px;
+
+        border-radius: 10px;
+
+        background: #eff6ff;
+
+        color: #2563eb;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 12px;
+
+        font-weight: 700;
+
+        flex-shrink: 0;
+
+    }
+
+
+    .requirement-text {
+
+        color: #475569;
+
+        font-size: 14px;
+
+        line-height: 1.6;
+
+        margin-bottom: 10px;
+
+    }
+
+
+    /* =================================
+       BADGES
+    ================================= */
+
+    .category-badge {
+
+        background: #f1f5f9;
+
+        color: #475569;
+
+        border-radius: 7px;
+
+        padding: 5px 9px;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+    }
+
+
+    .mandatory-badge {
+
+        background: #fee2e2;
+
+        color: #dc2626;
+
+        border-radius: 7px;
+
+        padding: 6px 10px;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+    }
+
+
+    .optional-badge {
+
+        background: #dcfce7;
+
+        color: #16a34a;
+
+        border-radius: 7px;
+
+        padding: 6px 10px;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+    }
+
+
+    /* =================================
+       ERROR
+    ================================= */
+
+    .form-error {
+
+        color: #dc2626;
+
+        font-size: 12px;
+
+        margin-top: 7px;
+
+    }
+
+
+    /* =================================
+       RESPONSIVE
+    ================================= */
+
+    @media (max-width: 768px) {
+
+        .upload-hero {
+
+            padding: 24px;
+
+        }
+
+
+        .upload-card {
+
+            padding: 22px;
+
+        }
+
+    }
+
+</style>
+
+
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-8">
-
-        <div class="mb-4">
-
-            <a
-                href="{% url 'project_list' %}"
-                class="text-decoration-none"
-            >
-                ← Back to Projects
-            </a>
-
-        </div>
+    <div class="col-lg-10 col-xl-9">
 
 
-        <div class="card border-0 shadow-sm">
+        <!-- =================================
+             HERO SECTION
+        ================================= -->
 
-            <div class="card-body p-4 p-md-5">
+        <div class="upload-hero">
 
-                <div class="mb-4">
+            <div class="upload-hero-content">
 
-                    <h2 class="fw-bold">
-                        Upload Tender Document
-                    </h2>
 
-                    <p class="text-muted mb-0">
+                <a
+                    href="{% url 'project_list' %}"
+                    class="back-link"
+                >
 
-                        Project:
-                        <strong>{{ project.name }}</strong>
+                    ← Back to Projects
 
-                    </p>
+                </a>
+
+
+                <div class="upload-icon">
+
+                    📄
 
                 </div>
 
 
-                {% if tender_document %}
+                <h2>
 
-                    <div class="alert alert-success">
+                    Upload Tender Document
 
-                        <strong>
-                            ✓ Tender Document Uploaded Successfully
-                        </strong>
+                </h2>
 
-                        <hr>
 
-                        <p class="mb-1">
+                <p>
 
-                            <strong>Title:</strong>
-                            {{ tender_document.title }}
+                    📁 Project:
 
-                        </p>
+                    <strong>
 
-                        <p class="mb-0">
+                        {{ project.name }}
 
-                            <strong>Extracted Text:</strong>
-                            {{ tender_document.extracted_text|length }}
-                            characters
+                    </strong>
 
-                        </p>
+                </p>
 
-                    </div>
-
-
-                    <div class="mt-4">
-
-                        <h5 class="fw-bold">
-                            🧠 AI Analysis
-                        </h5>
-
-                        <p class="text-muted">
-
-                            Use AI to analyze the tender document and extract
-                            important technical, financial, eligibility, and
-                            compliance requirements.
-
-                        </p>
-
-
-                        <form
-                            method="POST"
-                            action="{% url 'extract_tender_requirements' tender_document.id %}"
-                        >
-
-                            {% csrf_token %}
-
-
-                            <button
-                                type="submit"
-                                class="btn btn-primary"
-                            >
-
-                                🧠 Extract Requirements with AI
-
-                            </button>
-
-                        </form>
-
-                    </div>
-
-
-                    {% if tender_document.requirements.exists %}
-
-                        <hr class="my-4">
-
-
-                        <div>
-
-                            <h5 class="fw-bold mb-3">
-
-                                📋 Extracted Requirements
-
-                            </h5>
-
-                            <p class="text-muted">
-
-                                Requirements identified from the tender
-                                document using AI.
-
-                            </p>
-
-
-                            <div class="list-group">
-
-                                {% for requirement in tender_document.requirements.all %}
-
-                                    <div class="list-group-item">
-
-                                        <div
-                                            class="d-flex justify-content-between align-items-start gap-3"
-                                        >
-
-                                            <div>
-
-                                                <p class="mb-2">
-
-                                                    {{ requirement.requirement_text }}
-
-                                                </p>
-
-
-                                                <span
-                                                    class="badge text-bg-secondary"
-                                                >
-
-                                                    {{ requirement.category|title }}
-
-                                                </span>
-
-                                            </div>
-
-
-                                            {% if requirement.is_mandatory %}
-
-                                                <span
-                                                    class="badge text-bg-danger flex-shrink-0"
-                                                >
-
-                                                    Mandatory
-
-                                                </span>
-
-                                            {% else %}
-
-                                                <span
-                                                    class="badge text-bg-success flex-shrink-0"
-                                                >
-
-                                                    Optional
-
-                                                </span>
-
-                                            {% endif %}
-
-                                        </div>
-
-                                    </div>
-
-                                {% endfor %}
-
-                            </div>
-
-                        </div>
-
-                    {% endif %}
-
-
-                {% else %}
-
-                    <form
-                        method="POST"
-                        enctype="multipart/form-data"
-                    >
-
-                        {% csrf_token %}
-
-
-                        <div class="mb-3">
-
-                            <label class="form-label fw-semibold">
-
-                                Document Title
-
-                            </label>
-
-                            {{ form.title }}
-
-                            {% if form.title.errors %}
-
-                                <div class="text-danger small mt-1">
-
-                                    {{ form.title.errors }}
-
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <div class="mb-4">
-
-                            <label class="form-label fw-semibold">
-
-                                Upload PDF
-
-                            </label>
-
-                            {{ form.file }}
-
-                            <div class="form-text">
-
-                                Only PDF files are allowed.
-
-                            </div>
-
-
-                            {% if form.file.errors %}
-
-                                <div class="text-danger small mt-1">
-
-                                    {{ form.file.errors }}
-
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary"
-                        >
-
-                            Upload Tender
-
-                        </button>
-
-                    </form>
-
-                {% endif %}
 
             </div>
 
         </div>
 
+
+
+        <!-- =================================
+             MAIN CARD
+        ================================= -->
+
+        <div class="upload-card">
+
+
+            {% if tender_document %}
+
+
+                <!-- =============================
+                     SUCCESS STATE
+                ============================== -->
+
+                <div class="success-card">
+
+
+                    <div
+                        class="
+                            d-flex
+                            align-items-start
+                            gap-3
+                        "
+                    >
+
+
+                        <div class="success-icon">
+
+                            ✓
+
+                        </div>
+
+
+                        <div class="flex-grow-1">
+
+
+                            <div class="success-title">
+
+                                Tender Document Uploaded Successfully
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    text-muted
+                                    small
+                                "
+                            >
+
+                                Your tender document is ready for AI analysis.
+
+                            </div>
+
+
+                            <div class="document-info">
+
+
+                                <div class="mb-2">
+
+                                    <strong>📄 Title:</strong>
+
+                                    {{ tender_document.title }}
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>📝 Extracted Text:</strong>
+
+                                    {{ tender_document.extracted_text|length }}
+
+                                    characters
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =============================
+                     AI ANALYSIS
+                ============================== -->
+
+                <div class="ai-analysis-card">
+
+
+                    <div
+                        class="
+                            d-flex
+                            align-items-start
+                            gap-3
+                        "
+                    >
+
+
+                        <div class="ai-icon">
+
+                            🧠
+
+                        </div>
+
+
+                        <div class="flex-grow-1">
+
+
+                            <div class="ai-title">
+
+                                AI Requirement Analysis
+
+                            </div>
+
+
+                            <p class="ai-description">
+
+                                Analyze the tender document using AI to
+                                identify and organize important technical,
+                                financial, eligibility, legal, and other
+                                compliance requirements.
+
+                            </p>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <form
+                        method="POST"
+                        action="{% url 'extract_tender_requirements' tender_document.id %}"
+                        class="mt-4"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <button
+                            type="submit"
+                            class="btn-primary-custom"
+                        >
+
+                            🧠 Extract Requirements with AI
+
+                        </button>
+
+
+                    </form>
+
+
+                </div>
+
+
+
+                <!-- =============================
+                     EXTRACTED REQUIREMENTS
+                ============================== -->
+
+                {% if tender_document.requirements.exists %}
+
+
+                    <div class="requirements-section">
+
+
+                        <!-- HEADER -->
+
+                        <div
+                            class="
+                                d-flex
+                                justify-content-between
+                                align-items-center
+                                mb-3
+                            "
+                        >
+
+
+                            <div>
+
+
+                                <div class="section-title">
+
+                                    📋 Extracted Requirements
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        section-description
+                                        mb-0
+                                    "
+                                >
+
+                                    Requirements identified from the
+                                    tender document using AI.
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="requirement-count">
+
+                                {{ tender_document.requirements.count }}
+                                Found
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- REQUIREMENTS -->
+
+                        {% for requirement in tender_document.requirements.all %}
+
+
+                            <div class="requirement-item">
+
+
+                                <div
+                                    class="
+                                        d-flex
+                                        justify-content-between
+                                        align-items-start
+                                        gap-3
+                                    "
+                                >
+
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            gap-3
+                                        "
+                                    >
+
+
+                                        <!-- NUMBER -->
+
+                                        <div
+                                            class="requirement-number"
+                                        >
+
+                                            {{ forloop.counter }}
+
+                                        </div>
+
+
+
+                                        <!-- CONTENT -->
+
+                                        <div>
+
+
+                                            <div
+                                                class="
+                                                    requirement-text
+                                                "
+                                            >
+
+                                                {{ requirement.requirement_text }}
+
+                                            </div>
+
+
+
+                                            <span
+                                                class="
+                                                    category-badge
+                                                "
+                                            >
+
+                                                {{ requirement.category|title }}
+
+                                            </span>
+
+
+                                        </div>
+
+
+                                    </div>
+
+
+
+                                    <!-- STATUS -->
+
+                                    {% if requirement.is_mandatory %}
+
+
+                                        <span
+                                            class="
+                                                mandatory-badge
+                                            "
+                                        >
+
+                                            Mandatory
+
+                                        </span>
+
+
+                                    {% else %}
+
+
+                                        <span
+                                            class="
+                                                optional-badge
+                                            "
+                                        >
+
+                                            Optional
+
+                                        </span>
+
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+                {% endif %}
+
+
+
+            {% else %}
+
+
+                <!-- =============================
+                     UPLOAD FORM
+                ============================== -->
+
+                <div>
+
+
+                    <div class="section-title">
+
+                        Tender Document Details
+
+                    </div>
+
+
+                    <div class="section-description">
+
+                        Upload the tender document in PDF format to
+                        begin AI-powered requirement extraction and
+                        compliance analysis.
+
+                    </div>
+
+
+                </div>
+
+
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+                    {% csrf_token %}
+
+
+
+                    <!-- DOCUMENT TITLE -->
+
+                    <div class="mb-4">
+
+
+                        <label class="form-label-custom">
+
+                            Document Title
+
+                        </label>
+
+
+                        {{ form.title }}
+
+
+                        {% if form.title.errors %}
+
+
+                            <div class="form-error">
+
+                                {{ form.title.errors }}
+
+                            </div>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+
+                    <!-- FILE UPLOAD -->
+
+                    <div class="mb-4">
+
+
+                        <label class="form-label-custom">
+
+                            Upload PDF Document
+
+                        </label>
+
+
+
+                        <div class="file-upload-box">
+
+
+                            {{ form.file }}
+
+
+                            <div class="upload-help-text">
+
+                                📄 Only PDF files are allowed.
+
+                                Upload the official tender document
+                                for AI analysis.
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        {% if form.file.errors %}
+
+
+                            <div class="form-error">
+
+                                {{ form.file.errors }}
+
+                            </div>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        class="btn-primary-custom"
+                    >
+
+                        📤 Upload Tender Document
+
+                    </button>
+
+
+                </form>
+
+
+            {% endif %}
+
+
+        </div>
+
+
     </div>
 
 </div>
+
 
 {% endblock %}
