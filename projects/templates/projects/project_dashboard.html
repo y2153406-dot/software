@@ -1,0 +1,652 @@
+{% extends "projects/base.html" %}
+
+{% block title %}
+{{ project.name }} | Project Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+
+    <div>
+
+        <a
+            href="{% url 'project_list' %}"
+            class="text-decoration-none small"
+        >
+            ← Back to Projects
+        </a>
+
+
+        <h1 class="h2 fw-bold mt-2 mb-1">
+
+            {{ project.name }}
+
+        </h1>
+
+
+        <p class="text-muted mb-0">
+
+            {{ project.organization|default:"Organization not specified" }}
+
+        </p>
+
+    </div>
+
+
+    <a
+        href="{% url 'project_solution' project.id %}"
+        class="btn btn-primary"
+    >
+        Open Project Workspace →
+    </a>
+
+</div>
+
+
+<!-- PROJECT OVERVIEW -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body p-4">
+
+
+        <h4 class="fw-bold mb-3">
+
+            📌 Project Overview
+
+        </h4>
+
+
+        <p class="mb-3">
+
+            {{ project.description|default:"No project description provided." }}
+
+        </p>
+
+
+        <div class="row">
+
+
+            <div class="col-md-6">
+
+                <small class="text-muted">
+
+                    Created
+
+                </small>
+
+
+                <p class="mb-0 fw-semibold">
+
+                    {{ project.created_at|date:"d M Y, h:i A" }}
+
+                </p>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <small class="text-muted">
+
+                    Last Updated
+
+                </small>
+
+
+                <p class="mb-0 fw-semibold">
+
+                    {{ project.updated_at|date:"d M Y, h:i A" }}
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- PROJECT PROGRESS -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body p-4">
+
+
+        <h4 class="fw-bold mb-4">
+
+            🚀 Project Progress
+
+        </h4>
+
+
+        <div class="row g-3">
+
+
+            <!-- TENDER -->
+
+            <div class="col-md-3">
+
+                <div class="border rounded p-3 h-100">
+
+                    <div class="small text-muted mb-2">
+
+                        STEP 1
+
+                    </div>
+
+
+                    <h6 class="fw-bold">
+
+                        📄 Tender
+
+                    </h6>
+
+
+                    {% if tender_document %}
+
+                        <span class="badge text-bg-success">
+
+                            Uploaded
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge text-bg-secondary">
+
+                            Pending
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- REQUIREMENTS -->
+
+            <div class="col-md-3">
+
+                <div class="border rounded p-3 h-100">
+
+                    <div class="small text-muted mb-2">
+
+                        STEP 2
+
+                    </div>
+
+
+                    <h6 class="fw-bold">
+
+                        📋 Requirements
+
+                    </h6>
+
+
+                    {% if total_requirements > 0 %}
+
+                        <span class="badge text-bg-success">
+
+                            {{ total_requirements }} Added
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge text-bg-secondary">
+
+                            Pending
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- SOLUTION -->
+
+            <div class="col-md-3">
+
+                <div class="border rounded p-3 h-100">
+
+                    <div class="small text-muted mb-2">
+
+                        STEP 3
+
+                    </div>
+
+
+                    <h6 class="fw-bold">
+
+                        💡 Solution
+
+                    </h6>
+
+
+                    {% if solution %}
+
+                        <span class="badge text-bg-success">
+
+                            Added
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge text-bg-secondary">
+
+                            Pending
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- ANALYSIS -->
+
+            <div class="col-md-3">
+
+                <div class="border rounded p-3 h-100">
+
+                    <div class="small text-muted mb-2">
+
+                        STEP 4
+
+                    </div>
+
+
+                    <h6 class="fw-bold">
+
+                        🧠 Analysis
+
+                    </h6>
+
+
+                    {% if overall_score > 0 %}
+
+                        <span class="badge text-bg-success">
+
+                            Complete
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge text-bg-secondary">
+
+                            Pending
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- QUICK ACTIONS -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body p-4">
+
+
+        <h4 class="fw-bold mb-4">
+
+            ⚡ Quick Actions
+
+        </h4>
+
+
+        <div class="row g-3">
+
+
+            <!-- TENDER ACTION -->
+
+            <div class="col-md-4">
+
+                {% if tender_document %}
+
+                    <a
+                        href="{{ tender_document.file.url }}"
+                        target="_blank"
+                        class="btn btn-outline-primary w-100"
+                    >
+                        📄 View Tender
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'tender_document_upload' project.id %}"
+                        class="btn btn-primary w-100"
+                    >
+                        📤 Upload Tender
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- REQUIREMENTS ACTION -->
+
+            <div class="col-md-4">
+
+                {% if tender_document %}
+
+                    <a
+                        href="{% url 'requirement_list' project.id %}"
+                        class="btn btn-outline-primary w-100"
+                    >
+                        📋 Manage Requirements
+                    </a>
+
+                {% else %}
+
+                    <button
+                        class="btn btn-outline-secondary w-100"
+                        disabled
+                    >
+                        📋 Upload Tender First
+                    </button>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- SOLUTION ACTION -->
+
+            <div class="col-md-4">
+
+                <a
+                    href="{% url 'project_solution' project.id %}"
+                    class="btn btn-outline-success w-100"
+                >
+                    💡 Manage Solution
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="row g-3 mt-1">
+
+
+            <!-- COMPLIANCE REPORT -->
+
+            <div class="col-md-4">
+
+                {% if overall_score > 0 %}
+
+                    <a
+                        href="{% url 'compliance_report' project.id %}"
+                        class="btn btn-outline-primary w-100"
+                    >
+                        📊 Compliance Report
+                    </a>
+
+                {% else %}
+
+                    <button
+                        class="btn btn-outline-secondary w-100"
+                        disabled
+                    >
+                        📊 Run Analysis First
+                    </button>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- RISK SUMMARY -->
+
+            <div class="col-md-4">
+
+                {% if total_risks > 0 %}
+
+                    <a
+                        href="{% url 'project_solution' project.id %}"
+                        class="btn btn-outline-danger w-100"
+                    >
+                        🛡️ View Risks
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'project_solution' project.id %}"
+                        class="btn btn-outline-danger w-100"
+                    >
+                        🛡️ Analyze Risks
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- WORKSPACE -->
+
+            <div class="col-md-4">
+
+                <a
+                    href="{% url 'project_solution' project.id %}"
+                    class="btn btn-primary w-100"
+                >
+                    🚀 Open Workspace
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- ANALYTICS SUMMARY -->
+
+<div class="row g-4 mb-4">
+
+
+    <!-- COMPLIANCE -->
+
+    <div class="col-md-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body p-4">
+
+
+                <h5 class="fw-bold mb-4">
+
+                    📊 Compliance Summary
+
+                </h5>
+
+
+                <div class="row text-center">
+
+
+                    <div class="col-3">
+
+                        <h3 class="fw-bold text-primary">
+
+                            {{ overall_score }}%
+
+                        </h3>
+
+
+                        <small class="text-muted">
+
+                            Score
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="col-3">
+
+                        <h3 class="fw-bold text-success">
+
+                            {{ compliant_count }}
+
+                        </h3>
+
+
+                        <small class="text-muted">
+
+                            Compliant
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="col-3">
+
+                        <h3 class="fw-bold text-warning">
+
+                            {{ partial_count }}
+
+                        </h3>
+
+
+                        <small class="text-muted">
+
+                            Partial
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="col-3">
+
+                        <h3 class="fw-bold text-danger">
+
+                            {{ non_compliant_count }}
+
+                        </h3>
+
+
+                        <small class="text-muted">
+
+                            Failed
+
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RISK -->
+
+    <div class="col-md-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body p-4">
+
+
+                <h5 class="fw-bold mb-4">
+
+                    🛡️ Risk Summary
+
+                </h5>
+
+
+                <div class="row text-center">
+
+
+                    <div class="col-6">
+
+                        <h3 class="fw-bold">
+
+                            {{ total_risks }}
+
+                        </h3>
+
+
+                        <small class="text-muted">
+
+                            Risks Identified
+
+                        </small>
+
+                    </div>
+
+
+                    <div class="col-6">
+
+                        <h3 class="fw-bold text-danger">
+
+                            {{ high_risk_count }}
+
+                        </h3>
+
+
+                        <small class="text-muted">
+
+                            High Risk
+
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

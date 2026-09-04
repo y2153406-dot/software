@@ -1175,38 +1175,90 @@ def analyze_improvement_suggestions(request, project_id):
 
     if not failed_results.exists():
 
+        print(
+            "NO REQUIREMENTS NEED IMPROVEMENT."
+        )
+
         return redirect(
             "project_solution",
             project_id=project.id,
         )
 
+    expected_requirement_ids = set(
+        failed_results.values_list(
+            "requirement_id",
+            flat=True,
+        )
+    )
+
+    analysis_result = None
+
+
+    # TRY GEMINI AI
+
     try:
 
-        # First try Gemini AI
+        analysis_result = (
+            generate_improvement_suggestions(
+                failed_results,
+                solution.description,
+            )
+        )
+
+        suggestions = analysis_result.get(
+            "suggestions",
+            [],
+        )
+
+        received_requirement_ids = set(
+            item.get("requirement_id")
+            for item in suggestions
+            if item.get("requirement_id") is not None
+        )
+
+        is_valid_response = (
+
+            isinstance(
+                suggestions,
+                list,
+            )
+
+            and len(suggestions)
+            == len(expected_requirement_ids)
+
+            and received_requirement_ids
+            == expected_requirement_ids
+
+            and len(received_requirement_ids)
+            == len(suggestions)
+        )
+
+        if not is_valid_response:
+
+            raise Exception(
+                "Gemini returned incomplete or invalid "
+                "improvement suggestions."
+            )
+
+        print(
+            "GEMINI IMPROVEMENT ANALYSIS SUCCESSFUL"
+        )
+
+
+    # USE FALLBACK IF GEMINI FAILS
+
+    except Exception as error:
+
+        print(
+            "AI IMPROVEMENT ANALYSIS FAILED."
+        )
+
+        print(
+            "USING FALLBACK IMPROVEMENT SYSTEM:",
+            error,
+        )
+
         try:
-
-            analysis_result = (
-                generate_improvement_suggestions(
-                    failed_results,
-                    solution.description,
-                )
-            )
-
-            print(
-                "GEMINI IMPROVEMENT ANALYSIS SUCCESSFUL"
-            )
-
-        # If Gemini fails, use fallback
-        except Exception as error:
-
-            print(
-                "AI IMPROVEMENT ANALYSIS FAILED."
-            )
-
-            print(
-                "USING FALLBACK IMPROVEMENT SYSTEM:",
-                error,
-            )
 
             analysis_result = (
                 generate_improvement_suggestions_fallback(
@@ -1219,11 +1271,30 @@ def analyze_improvement_suggestions(request, project_id):
                 "FALLBACK IMPROVEMENT ANALYSIS SUCCESSFUL"
             )
 
-    except Exception as error:
+        except Exception as fallback_error:
+
+            print(
+                "FALLBACK IMPROVEMENT ERROR:",
+                fallback_error,
+            )
+
+            return redirect(
+                "project_solution",
+                project_id=project.id,
+            )
+
+
+    suggestions = analysis_result.get(
+        "suggestions",
+        [],
+    )
+
+    # FINAL VALIDATION
+
+    if not suggestions:
 
         print(
-            "IMPROVEMENT SUGGESTION ERROR:",
-            error,
+            "NO IMPROVEMENT SUGGESTIONS GENERATED."
         )
 
         return redirect(
@@ -1231,22 +1302,36 @@ def analyze_improvement_suggestions(request, project_id):
             project_id=project.id,
         )
 
-    suggestions = analysis_result.get(
-        "suggestions",
-        [],
-    )
 
-    # Delete old suggestions before saving new ones
+    # ONLY DELETE OLD SUGGESTIONS AFTER
+    # NEW VALID SUGGESTIONS ARE AVAILABLE
+
     ImprovementSuggestion.objects.filter(
         project=project,
         solution=solution,
     ).delete()
+
+
+    # SAVE NEW SUGGESTIONS
+
+    valid_requirement_ids = expected_requirement_ids
+
+    saved_count = 0
 
     for item in suggestions:
 
         requirement_id = item.get(
             "requirement_id"
         )
+
+        if requirement_id not in valid_requirement_ids:
+
+            print(
+                f"INVALID REQUIREMENT ID: "
+                f"{requirement_id}"
+            )
+
+            continue
 
         try:
 
@@ -1258,25 +1343,64 @@ def analyze_improvement_suggestions(request, project_id):
 
             continue
 
-        ImprovementSuggestion.objects.create(
-            project=project,
-            solution=solution,
-            requirement=requirement,
-            suggestion=item.get(
-                "suggestion",
-                "",
-            ),
-            priority=item.get(
-                "priority",
-                "medium",
-            ),
+
+        suggestion_text = item.get(
+            "suggestion",
+            "",
+        ).strip()
+
+        priority = item.get(
+            "priority",
+            "medium",
         )
+
+
+        # SKIP EMPTY SUGGESTIONS
+
+        if not suggestion_text:
+
+            continue
+
+
+        # VALIDATE PRIORITY
+
+        if priority not in [
+            "high",
+            "medium",
+            "low",
+        ]:
+
+            priority = "medium"
+
+
+        ImprovementSuggestion.objects.create(
+
+            project=project,
+
+            solution=solution,
+
+            requirement=requirement,
+
+            suggestion=suggestion_text,
+
+            priority=priority,
+
+        )
+
+        saved_count += 1
+
+
+    print(
+        f"IMPROVEMENT SUGGESTIONS SAVED: "
+        f"{saved_count}"
+    )
+
 
     return redirect(
         "project_solution",
         project_id=project.id,
     )
-
+    
 def requirement_list(request, project_id):
 
     project = get_object_or_404(

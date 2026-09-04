@@ -53,8 +53,8 @@ Projects | Tender Compliance AI
                     <!-- CLICKABLE PROJECT CONTENT -->
 
                     <a
-                        href="{% url 'project_solution' project.id %}"
-                        class="text-decoration-none text-dark"
+                        href="{% url 'project_dashboard' project.id %}"
+                        class="text-decoration-none text-dark d-block"
                     >
 
                         <div class="card-body">
@@ -103,7 +103,7 @@ Projects | Tender Compliance AI
                             {% if project.tender_document %}
 
                                 <a
-                                    href="{% url 'project_solution' project.id %}"
+                                    href="{% url 'project_dashboard' project.id %}"
                                     class="badge text-bg-success text-decoration-none"
                                 >
 

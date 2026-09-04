@@ -15,16 +15,13 @@ Manage Requirements | Tender Compliance AI
         <!-- HEADER -->
 
         <div
-            class="d-flex justify-content-between
-            align-items-center mb-4"
+            class="d-flex justify-content-between align-items-center mb-4"
         >
 
             <div>
 
                 <h2 class="fw-bold mb-1">
-
                     📋 Manage Tender Requirements
-
                 </h2>
 
 
@@ -42,9 +39,7 @@ Manage Requirements | Tender Compliance AI
                 href="{% url 'requirement_create' project.id %}"
                 class="btn btn-primary"
             >
-
                 ➕ Add Requirement
-
             </a>
 
         </div>
@@ -58,9 +53,7 @@ Manage Requirements | Tender Compliance AI
                 href="{% url 'project_solution' project.id %}"
                 class="text-decoration-none"
             >
-
                 ← Back to Project Solution
-
             </a>
 
         </div>
@@ -94,30 +87,23 @@ Manage Requirements | Tender Compliance AI
                                 <!-- HEADER -->
 
                                 <div
-                                    class="d-flex
-                                    justify-content-between
-                                    align-items-start mb-3"
+                                    class="d-flex justify-content-between align-items-start mb-3"
                                 >
 
                                     <div>
 
                                         <h6 class="fw-bold mb-1">
 
-                                            Requirement
-                                            {{ forloop.counter }}
+                                            Requirement {{ forloop.counter }}
 
                                         </h6>
 
 
                                         <!-- CATEGORY -->
 
-                                        <span
-                                            class="badge bg-secondary"
-                                        >
+                                        <span class="badge bg-secondary">
 
-                                            {{
-                                                requirement.get_category_display
-                                            }}
+                                            {{ requirement.get_category_display }}
 
                                         </span>
 
@@ -126,9 +112,7 @@ Manage Requirements | Tender Compliance AI
 
                                         {% if requirement.is_mandatory %}
 
-                                            <span
-                                                class="badge bg-danger"
-                                            >
+                                            <span class="badge bg-danger">
 
                                                 Mandatory
 
@@ -157,9 +141,7 @@ Manage Requirements | Tender Compliance AI
                                             href="{% url 'requirement_edit' requirement.id %}"
                                             class="btn btn-sm btn-outline-primary"
                                         >
-
                                             ✏️ Edit
-
                                         </a>
 
 
@@ -167,9 +149,7 @@ Manage Requirements | Tender Compliance AI
                                             href="{% url 'requirement_delete' requirement.id %}"
                                             class="btn btn-sm btn-outline-danger"
                                         >
-
                                             🗑️ Delete
-
                                         </a>
 
                                     </div>
@@ -181,9 +161,7 @@ Manage Requirements | Tender Compliance AI
 
                                 <p class="mb-0 text-muted">
 
-                                    {{
-                                        requirement.requirement_text
-                                    }}
+                                    {{ requirement.requirement_text }}
 
                                 </p>
 

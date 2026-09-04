@@ -1,8 +1,9 @@
 import json
 import os
+import time
 
-from google import genai
 from dotenv import load_dotenv
+from google import genai
 
 
 load_dotenv()
@@ -87,7 +88,7 @@ IMPORTANT RULES:
 
 5. A higher risk_score means greater risk.
 
-6. Consider the following while analyzing risk:
+6. Consider:
 
 - Missing solution features
 - Partial compliance
@@ -108,15 +109,102 @@ team can reduce the risk.
 10. Do not add any text outside the JSON.
 """
 
-    response = client.models.generate_content(
-        model="gemini-3.6-flash",
-        contents=prompt,
+    max_retries = 3
+
+    for attempt in range(max_retries):
+
+        try:
+
+            response = client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=prompt,
+            )
+
+            response_text = response.text.strip()
+
+
+            # REMOVE MARKDOWN CODE FENCES
+
+            if response_text.startswith("```"):
+
+                lines = response_text.splitlines()
+
+                if lines and lines[0].startswith("```"):
+
+                    lines = lines[1:]
+
+                if (
+                    lines
+                    and lines[-1].strip() == "```"
+                ):
+
+                    lines = lines[:-1]
+
+                response_text = "\n".join(
+                    lines
+                ).strip()
+
+
+            result = json.loads(
+                response_text
+            )
+
+            return result
+
+
+        except Exception as error:
+
+            error_message = str(error)
+
+            print(
+                f"Gemini Risk API attempt "
+                f"{attempt + 1} failed:",
+                error,
+            )
+
+
+            # QUOTA ERROR — DON'T RETRY
+
+            if (
+                "429" in error_message
+                or "RESOURCE_EXHAUSTED"
+                in error_message
+                or "quota"
+                in error_message.lower()
+            ):
+
+                raise Exception(
+                    "Gemini API quota has been exhausted. "
+                    "Please wait for the quota to reset "
+                    "or check your Gemini API plan."
+                ) from error
+
+
+            # TEMPORARY SERVER ERROR — RETRY
+
+            if (
+                "503" in error_message
+                or "UNAVAILABLE"
+                in error_message
+            ):
+
+                if attempt < max_retries - 1:
+
+                    time.sleep(
+                        5 * (attempt + 1)
+                    )
+
+                    continue
+
+
+            # STOP FOR OTHER ERRORS
+
+            raise Exception(
+                "AI risk analysis failed. "
+                "Please try again later."
+            ) from error
+
+
+    raise Exception(
+        "AI risk analysis service is temporarily unavailable."
     )
-
-    response_text = response.text.strip()
-
-    result = json.loads(
-        response_text
-    )
-
-    return result
